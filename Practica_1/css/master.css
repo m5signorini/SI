@@ -239,3 +239,67 @@ nav input[type=text]{
     background-color: lightgreen;
     text-align: center;
 }
+
+.signup_container{
+    background-color: white;
+    margin: 0;
+    position: absolute;
+    display:grid;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    border-style: outset;;
+}
+
+#signup_body input[type=text], input[type=password]{
+    width:75%;
+    height:25px;
+    display:inline-block;
+    box-sizing:border-box;
+    margin: 25px 50px;
+    font-size: 20px;
+    text-align: center;
+    border: 0.4px solid;
+}
+
+.signup_container button{
+    background-color:#04AA6D;
+    color: white;
+    opacity: 0.9;
+    width: 75%;
+    height: 75px;
+    margin: 25px 50px;
+    border-color: none;
+    font-size: 20px;
+}
+
+.signup_container p{
+    color:grey;
+    opacity:50%;
+}
+
+#singusername{
+    background-image:url("../images/user.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#email{
+    background-image:url("../images/email.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#signpassword{
+    background-image:url("../images/password.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#confsignpassword{
+    background-image:url("../images/confirmation.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
