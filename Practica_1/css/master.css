@@ -1,22 +1,10 @@
 * {
   font-family: sans-serif;
-  /*background-color : grey;*/
 }
 
-/* FOOTER */
-.footer{
-    width: 100%;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-
-    color: white;
-    background-color: lightgreen;
-    text-align: right;
-}
-
-.footer p {
-    padding: 0 10px;
+body {
+    position: relative;
+    margin: 0;
 }
 
 /* HEADER */
@@ -51,13 +39,13 @@
     width: 13px;
 }
 
-.login_links {
+.login_container_index {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
 }
 
-.login_links * {
+.login_container_index * {
     padding: 0 5px 0 5px;
 }
 
@@ -102,6 +90,124 @@
 
 .side_links ul li:hover::after{
     width: 100%;
+}
+
+/* CONTENT */
+.content {
+    margin-left: 8em;
+    padding-left: 4em;
+    padding-right: 13em;
+}
+
+.searcher {
+    display: flex;
+    margin: 20px 0 10px 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.filterbox {
+    width: 90%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.filter {
+    padding: 0 5px 0 5px;
+}
+.filter input {
+    margin-bottom: 0;
+}
+
+.searchbox {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.searchbox input {
+    height: 30px;
+    width: 95%;
+    font-size: 19px;
+}
+
+.movies_container {
+    display: grid;
+    grid-gap: 10px;
+    /*grid-template-columns: repeat(auto-fit,320px);*/
+    grid-template-columns: repeat(auto-fit,minmax(350px, max-content));
+    justify-content: center;
+    margin: 20px 0 20px 0;
+}
+
+.movie_preview {
+    height: 350px;
+    width: 320px;
+    border: 1px solid lightgray;
+    margin: 0px 15px 10px 15px;
+}
+
+.movie_title {
+    padding: 5px;
+    text-align: center;
+    font-size: 11px;
+    color: darkblue;
+}
+.movie_title h2 {
+    margin: 0;
+}
+
+.movie_quickdata {
+    padding: 5px;
+    display: flex;
+    justify-content: space-around;
+    color: darkblue;
+    background-color: ghostwhite;
+}
+
+.movie_poster {
+    height: 200px;
+    float: left;
+}
+.movie_poster img {
+    height: 210px;
+}
+
+.movie_synopsis {
+    height: 200px;
+    padding: 6px;
+    overflow: hidden;
+    font-size: 12px;
+}
+.movie_synopsis:hover {
+    overflow-y: scroll;
+}
+.movie_synopsis span {
+    white-space: pre-line;
+}
+
+.movie_footer {
+    height: 70px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* FOOTER */
+.footer{
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+
+    color: white;
+    background-color: lightgreen;
+    text-align: right;
+}
+
+.footer p {
+    padding: 0 10px;
 }
 
 /***Login Window***/
