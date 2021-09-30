@@ -1,206 +1,131 @@
-@ -1,305 +0,0 @@
 * {
   font-family: sans-serif;
   /*background-color : grey;*/
 }
 
-/* Nav Bar */
-.header{
-    max-height: 15vh;
-    width: 100%;
-    background-color: green;
-    position: sticky;
-}
-
-nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-nav img{
-    width: 50px;
-    padding: 0px 40px;
-}
-
-nav input[type=text]{
-    flex: 1;
-    float: right;
-    border:none;
-    font-size: 20px;
-    position: absolute;
-    right: 550px;
-    cursor: pointer;
-    padding: 7px;
-}
-
-.nav_buttons{
-    flex:2;
-    text-align:right;
-}
-
-.nav_buttons ul{
-    display: inline-block;
-    position: relative;
-    padding: 20px 20px;
-}
-
-.nav_buttons ul button{
-    color: #fff;
-    background-color: darkgreen;
-    font-size: 20px;
-    border-color: green;
-    cursor: pointer;
-    border-radius:100%;
-    transition: 0.6s;
-}
-
-.nav_buttons ul button:hover{
-    background-color: white;
-    border-color: none;
-    font-size: 25px;
-    color: green;
-}
-
-.app_name{
-    width:70%;
-    color: #fff;
-    position: sticky;
-    top:50%;
-    left:50%;
-    transform: translate(-25%,-275%);
-}
-
-/*Footer*/
+/* FOOTER */
 .footer{
+    width: 100%;
     position: fixed;
     left: 0;
-    background-color: green;
-    color: #fff;
-    text-align: right;
     bottom: 0;
-    width: 100%;
+
+    color: white;
+    background-color: lightgreen;
+    text-align: right;
 }
 
-.footer p{
+.footer p {
     padding: 0 10px;
 }
 
-/*Side Menu*/
-.side_menu{
+/* HEADER */
+.header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 99999;
     display: flex;
-    background-color: green;
-    height: 72.5%;
-    position: fixed;
-    width: 20vh;
+    justify-content: space-around;
+
+    background-color: mediumseagreen;
 }
 
-.side_links{
-    flex:1;
-    text-align:left;
+.logo_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_logo {
+    width: 50px;
+}
+
+.app_name h1 {
+    color: white;
+    font-size: 38px;
+    font-family: monospace;
+}
+
+.user_icon {
+    width: 13px;
+}
+
+.login_links {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.login_links * {
+    padding: 0 5px 0 5px;
+}
+
+/* SIDE MENU */
+.side_menu{
+    width: 8em;
+    height: 100%;
+    display: flex;
+    position: fixed;
+    background-color: lightgreen;
+}
+
+.side_links ul {
+    padding: 0px 15px 0px 15px;
+    text-align: left;
 }
 
 .side_links ul li{
-    list-style: none;
-    display: block;
     position: relative;
+    display: block;
     padding: 15px 0px;
+
+    list-style: none;
     cursor: pointer;
 }
 
 .side_links ul li a{
     color: white;
-    text-decoration:none;
+    text-decoration: none;
 }
 
 .side_links ul li::after{
-    content: "";
     width: 0%;
     height: 2px;
     display: block;
-    margin:auto;
-    background-color: white;
+    margin: auto;
+
+    content: "";
     transition:0.6s;
+    background-color: white;
 }
 
 .side_links ul li:hover::after{
     width: 100%;
 }
 
-/*Movies Samples*/
-.movies_preview{
-    position: fixed;
-    height: 72.5%;
-    width: 85%;
-    right: 10px;
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: repeat(auto-fill,minmax(200px, 1fr));
-    list-style: none;
-    background-color:green;
-}
-
-.movies_preview li{
-    box-shadow: 0 4px 10px;
-    max-width: 250px;
-    max-height: 99%;
-    text-align: center;
-}
-
-.movies_preview li p button{
-    border: none;
-    padding:12px;
-    color: white;
-    background-color:black;
-    opacity: 0.6;
-    width:75%;
-    cursor: pointer;
-    transition:0.6s;
-}
-
-.movies_preview li p button:hover{
-    opacity: 1;
-}
-
-.movies_preview img{
-    max-width: 75%;
-    max-height:75%;
-    padding: 20px 25px;
-}
-
-.price{
-    color: white;
-    font-size: 20px;
-}
-
-@media(max-width: 700px){
-    .app_name h1{
-        font-size: 12px;
-    }
-}
-
 /***Login Window***/
 #login_body{
-    background-color: lightgreen;
+    background-color: white;
     text-align: center;
+    margin:0;
 }
 
 .login_container{
+    margin-left: 8em;
+    margin-top: 7em;
+    padding-right: 30em;
+}
+
+.login_content{
     background-color: white;
-    margin: 0;
-    position: absolute;
     display:grid;
-    top: 50%;
-    left: 50%;
-    width: 500px;
-    height: 500px;
-    transform: translate(-50%, -50%);
-    border-style: outset;;
+    margin: 20px 0px 10px 300px;
+    justify-content: center;
+    align-items: center;
 }
 
 #login_body input[type=text], input[type=password]{
-    width:75%;
-    height:75px;
     display:inline-block;
     box-sizing:border-box;
     margin: 25px 50px;
@@ -209,7 +134,7 @@ nav input[type=text]{
     border: 0.4px solid;
 }
 
-.login_container button{
+.login_content button{
     background-color:#04AA6D;
     color: white;
     opacity: 0.9;
@@ -220,63 +145,76 @@ nav input[type=text]{
     font-size: 20px;
 }
 
-.login_container li{
+.login_content li{
     display:inline-block;
 }
 
-.login_container li h2{
+.login_content li h2{
     color: grey;
     text-decoration:none;
     font-size:14px;
 }
 
-.login_container li a{
+.login_content li a{
     color: green;
     text-decoration:none;
 }
 
 /***Signup***/
 #signup_body{
-    background-color: lightgreen;
+    background-color: white;
     text-align: center;
+    margin:0;
 }
 
 .signup_container{
-    background-color: white;
-    margin: 0;
-    position: absolute;
-    display:grid;
-    top: 50%;
-    left: 50%;
-    width: 500px;
-    height: 600px;
-    transform: translate(-50%, -50%);
-    border-style: outset;;
+    margin-left: 8em;
+    padding-right: 10em;
+    right:0;
 }
 
-#signup_body input[type=text], input[type=password]{
-    width:75%;
+.signup_content{
+    background-color: white;
+    display:grid;
+    text-align: center;
+    justify-items:center;
+}
+
+.inputs input[type=text], input[type=password]{
     height:25px;
-    display:inline-block;
-    box-sizing:border-box;
     margin: 25px 50px;
-    font-size: 20px;
+    font-size: 15px;
     text-align: center;
     border: 0.4px solid;
+    width: 250px;
+    cursor: pointer;
 }
 
-.signup_container button{
+.inputs{
+    display:flex;
+    flex-direction:row;
+}
+
+.inputs_left{
+    display: flex;
+    flex-direction: column;
+}
+
+.inputs_right{
+    display: flex;
+    flex-direction:column;
+}
+
+.signup_content button{
     background-color:#04AA6D;
     color: white;
     opacity: 0.9;
-    width: 75%;
-    height: 75px;
-    margin: 25px 50px;
     border-color: none;
-    font-size: 20px;
+    width: 100px;
+    cursor: pointer;
 }
 
-.signup_container p{
+.signup_content p{
     color:grey;
     opacity:50%;
 }
@@ -303,4 +241,200 @@ nav input[type=text]{
     background-image:url("../images/confirmation.png");
     background-size:25px;
     background-repeat:no-repeat;
+}
+
+#address{
+    background-image:url("../images/address.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#payment{
+    background-image:url("../images/credit-card.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+/*** SHOPPING CART***/
+#cart_body{
+    background-color: white;
+    text-align: left;
+    margin:0;
+}
+
+.cart_container{
+    margin-left: 8em;
+    padding-right: 10em;
+    right:0;
+}
+
+.cart_categories{
+    display:flex;
+    margin-left: 3em;
+}
+.cart_categories p{
+    opacity:0.5;
+    color:grey;
+}
+
+.cart_categories span{
+    margin-top:16px;
+    font-size: 20px;
+}
+
+.cart_tags{
+    display:flex;
+    margin-left:300px;
+}
+
+.price_tag{
+    margin-left: 30px;
+}
+
+.quantity_tag{
+    margin-left: 30px;
+}
+
+.total_tag{
+    margin-left: 120px;
+}
+
+.shopping_cart{
+    display: grid;
+    margin-left:3em;
+    grid-gap:30px 0;
+    padding-bottom: 5em;
+}
+
+.shopping_cart img{
+    width:85px;
+    height:120px;
+}
+
+
+.cart_product{
+    display:flex;
+}
+
+.cart_product input{
+    width: 30px;
+}
+
+.cart_product button{
+    width: 60px;
+    background-color:green;
+    color: white;
+    border-radius: 5%;
+    height:30px;
+    font-size:12px;
+    border:0;
+    cursor:pointer;
+}
+
+.product_dcp{
+    max-width:400px;
+    margin-left:30px;
+}
+
+.product_dcp p{
+}
+
+.product_dcp span{
+    font-size: 10px;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
+}
+
+.product_price{
+    margin-left: 30px;
+}
+.product_quantity{
+    margin-left:30px;
+}
+.product_remove{
+    margin-left:30px;
+}
+.products_total_price{
+    margin-left:30px;
+}
+.checkout_part{
+    max-width:75%;
+    display:flex;
+    flex-direction:column;
+    text-align:right;
+}
+.checkout_part button{
+    width:90px;
+    height:40px;
+    background-color:green;
+    border-radius:5%;
+    color:white;
+    margin-left: auto;
+    margin-top: 50px;
+}
+
+/*** RESIZE ***/
+@media (max-width: 800px) {
+    /* SING UP */
+  .inputs input[type=text], input[type=password]{
+      width:100px;
+      font-size: 7px;
+  }
+  .signup_container{
+      margin-left:6em;
+      top:0;
+      right:0;
+  }
+  .side_menu{
+      width:7em;
+  }
+
+  /* CART */
+  /*#menu_cart{
+      display: none;
+  }
+
+  .cart_tags{
+      display:flex;
+      margin-left:70px;
+  }
+
+  .price_tag{
+      margin-left: 10px;
+  }
+
+  .quantity_tag{
+      margin-left: 10px;
+  }
+
+  .total_tag{
+      margin-left: 100px;
+  }
+
+  .cart_container{
+      margin-left:0;
+  }
+  .product_price{
+      margin-left: 10px;
+  }
+  .product_quantity{
+      margin-left:10px;
+  }
+  .product_remove{
+      margin-left:10px;
+  }
+  .products_total_price{
+      margin-left:10px;
+  }
+  .product_dcp{
+      max-width:100px;
+      margin-left:20px;
+  }
+  .cart_categories span{
+      margin-top:16px;
+      font-size: 15px;
+  }*/
 }
