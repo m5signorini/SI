@@ -1,0 +1,306 @@
+@ -1,305 +0,0 @@
+* {
+  font-family: sans-serif;
+  /*background-color : grey;*/
+}
+
+/* Nav Bar */
+.header{
+    max-height: 15vh;
+    width: 100%;
+    background-color: green;
+    position: sticky;
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav img{
+    width: 50px;
+    padding: 0px 40px;
+}
+
+nav input[type=text]{
+    flex: 1;
+    float: right;
+    border:none;
+    font-size: 20px;
+    position: absolute;
+    right: 550px;
+    cursor: pointer;
+    padding: 7px;
+}
+
+.nav_buttons{
+    flex:2;
+    text-align:right;
+}
+
+.nav_buttons ul{
+    display: inline-block;
+    position: relative;
+    padding: 20px 20px;
+}
+
+.nav_buttons ul button{
+    color: #fff;
+    background-color: darkgreen;
+    font-size: 20px;
+    border-color: green;
+    cursor: pointer;
+    border-radius:100%;
+    transition: 0.6s;
+}
+
+.nav_buttons ul button:hover{
+    background-color: white;
+    border-color: none;
+    font-size: 25px;
+    color: green;
+}
+
+.app_name{
+    width:70%;
+    color: #fff;
+    position: sticky;
+    top:50%;
+    left:50%;
+    transform: translate(-25%,-275%);
+}
+
+/*Footer*/
+.footer{
+    position: fixed;
+    left: 0;
+    background-color: green;
+    color: #fff;
+    text-align: right;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer p{
+    padding: 0 10px;
+}
+
+/*Side Menu*/
+.side_menu{
+    display: flex;
+    background-color: green;
+    height: 72.5%;
+    position: fixed;
+    width: 20vh;
+}
+
+.side_links{
+    flex:1;
+    text-align:left;
+}
+
+.side_links ul li{
+    list-style: none;
+    display: block;
+    position: relative;
+    padding: 15px 0px;
+    cursor: pointer;
+}
+
+.side_links ul li a{
+    color: white;
+    text-decoration:none;
+}
+
+.side_links ul li::after{
+    content: "";
+    width: 0%;
+    height: 2px;
+    display: block;
+    margin:auto;
+    background-color: white;
+    transition:0.6s;
+}
+
+.side_links ul li:hover::after{
+    width: 100%;
+}
+
+/*Movies Samples*/
+.movies_preview{
+    position: fixed;
+    height: 72.5%;
+    width: 85%;
+    right: 10px;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill,minmax(200px, 1fr));
+    list-style: none;
+    background-color:green;
+}
+
+.movies_preview li{
+    box-shadow: 0 4px 10px;
+    max-width: 250px;
+    max-height: 99%;
+    text-align: center;
+}
+
+.movies_preview li p button{
+    border: none;
+    padding:12px;
+    color: white;
+    background-color:black;
+    opacity: 0.6;
+    width:75%;
+    cursor: pointer;
+    transition:0.6s;
+}
+
+.movies_preview li p button:hover{
+    opacity: 1;
+}
+
+.movies_preview img{
+    max-width: 75%;
+    max-height:75%;
+    padding: 20px 25px;
+}
+
+.price{
+    color: white;
+    font-size: 20px;
+}
+
+@media(max-width: 700px){
+    .app_name h1{
+        font-size: 12px;
+    }
+}
+
+/***Login Window***/
+#login_body{
+    background-color: lightgreen;
+    text-align: center;
+}
+
+.login_container{
+    background-color: white;
+    margin: 0;
+    position: absolute;
+    display:grid;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    border-style: outset;;
+}
+
+#login_body input[type=text], input[type=password]{
+    width:75%;
+    height:75px;
+    display:inline-block;
+    box-sizing:border-box;
+    margin: 25px 50px;
+    font-size: 20px;
+    text-align: center;
+    border: 0.4px solid;
+}
+
+.login_container button{
+    background-color:#04AA6D;
+    color: white;
+    opacity: 0.9;
+    width: 75%;
+    height: 75px;
+    margin: 25px 50px;
+    border-color: none;
+    font-size: 20px;
+}
+
+.login_container li{
+    display:inline-block;
+}
+
+.login_container li h2{
+    color: grey;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.login_container li a{
+    color: green;
+    text-decoration:none;
+}
+
+/***Signup***/
+#signup_body{
+    background-color: lightgreen;
+    text-align: center;
+}
+
+.signup_container{
+    background-color: white;
+    margin: 0;
+    position: absolute;
+    display:grid;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    border-style: outset;;
+}
+
+#signup_body input[type=text], input[type=password]{
+    width:75%;
+    height:25px;
+    display:inline-block;
+    box-sizing:border-box;
+    margin: 25px 50px;
+    font-size: 20px;
+    text-align: center;
+    border: 0.4px solid;
+}
+
+.signup_container button{
+    background-color:#04AA6D;
+    color: white;
+    opacity: 0.9;
+    width: 75%;
+    height: 75px;
+    margin: 25px 50px;
+    border-color: none;
+    font-size: 20px;
+}
+
+.signup_container p{
+    color:grey;
+    opacity:50%;
+}
+
+#singusername{
+    background-image:url("../images/user.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#email{
+    background-image:url("../images/email.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#signpassword{
+    background-image:url("../images/password.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
+
+#confsignpassword{
+    background-image:url("../images/confirmation.png");
+    background-size:25px;
+    background-repeat:no-repeat;
+}
