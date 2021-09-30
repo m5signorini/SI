@@ -306,6 +306,15 @@ body {
     flex-direction: column;
 }
 
+.inputs_left div{
+    display: flex;
+    flex-direction: column;
+}
+.strength {
+    font-size: 10px;
+    margin-bottom: 15px;
+}
+
 .inputs_right{
     display: flex;
     flex-direction:column;
