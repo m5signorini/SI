@@ -8,7 +8,7 @@
         <script type="text/javascript" src="../static/scripts/signup.js"></script>
     </head>
 
-    <body id="signup_body">
+    <body>
         <!-- HEADER -->
         <div class="header">
             <div class="logo_container">
@@ -35,33 +35,34 @@
             </div>
         </div>
         <!-- SINGUP CONTAINER -->
-        <div class="signup_container">
+        <div class="content">
 
             <div class="signup_content">
 
                 <h1>Create Account</h1>
                 <p>It's free and hardly takes more than 3 seconds</p>
 
-                <div class="inputs">
-                    <div class="inputs_left">
-                        <input type="text" id="singusername" placeholder="Username" name="signusername" required>
-                        <input type="text" id="email" placeholder="Email Address" name="email" required>
-                        <div>
-                            <input type="password" id="signpassword" placeholder="Password" name="signpassword" required>
-                            <span class="strength" id="strength_1"></span>
+                <form class="user_form" action="index.html" method="post">
+                    <div class="inputs">
+                        <div class="inputs_left">
+                            <input type="text" id="singusername" placeholder="Username" name="signusername" required>
+                            <input type="text" id="email" placeholder="Email Address" name="email" required>
+                            <div>
+                                <input type="password" id="signpassword" placeholder="Password" name="signpassword" required>
+                                <span class="strength" id="strength_1"></span>
+                            </div>
+                            <div>
+                                <input type="password" id="confsignpassword" placeholder="Confirm Password" name="confsignpassword" required>
+                                <span class="strength" id="strength_2"></span>
+                            </div>
                         </div>
-                        <div>
-                            <input type="password" id="confsignpassword" placeholder="Confirm Password" name="confsignpassword" required>
-                            <span class="strength" id="strength_2"></span>
+                        <div class="inputs_right">
+                            <input type="text" id="address" placeholder="Shipping Address" name="address" required>
+                            <input type="text" id="payment" placeholder="Pay Method" name="payment" required>
                         </div>
                     </div>
-                    <div class="inputs_right">
-                        <input type="text" id="address" placeholder="Shipping Address" name="address" required>
-                        <input type="text" id="payment" placeholder="Pay Method" name="payment" required>
-                    </div>
-                </div>
-
-                <button type="submit">Sign Up</button>
+                    <button type="submit">Sign Up</button>
+                </form>
 
                 <p>By clicking Sign Up, you agree to our Terms.</p>
 

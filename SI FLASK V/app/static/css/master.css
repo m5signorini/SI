@@ -211,33 +211,13 @@ body {
 }
 
 /***Login Window***/
-#login_body{
-    background-color: white;
-    text-align: center;
-    margin:0;
-}
-
-.login_container{
-    margin-left: 8em;
-    margin-top: 7em;
-    padding-right: 30em;
-}
 
 .login_content{
     background-color: white;
     display:grid;
-    margin: 20px 0px 10px 300px;
     justify-content: center;
     align-items: center;
-}
-
-#login_body input[type=text], input[type=password]{
-    display:inline-block;
-    box-sizing:border-box;
-    margin: 25px 50px;
-    font-size: 20px;
     text-align: center;
-    border: 0.4px solid;
 }
 
 .login_content button{
@@ -247,7 +227,6 @@ body {
     width: 75%;
     height: 75px;
     margin: 25px 50px;
-    border-color: none;
     font-size: 20px;
 }
 
@@ -267,17 +246,6 @@ body {
 }
 
 /***Signup***/
-#signup_body{
-    background-color: white;
-    text-align: center;
-    margin:0;
-}
-
-.signup_container{
-    margin-left: 8em;
-    padding-right: 10em;
-    right:0;
-}
 
 .signup_content{
     background-color: white;
@@ -286,14 +254,25 @@ body {
     justify-items:center;
 }
 
-.inputs input[type=text], input[type=password]{
+.user_form input[type=text], .user_form input[type=password]{
     height:25px;
     margin: 25px 50px;
     font-size: 15px;
     text-align: center;
     border: 0.4px solid;
     width: 250px;
-    cursor: pointer;
+}
+
+.user_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inputs input {
+    background-size:25px;
+    background-repeat:no-repeat;
+    background-position: 1px 1px;
 }
 
 .inputs{
@@ -335,52 +314,32 @@ body {
 }
 
 #singusername{
-    background-image:url("../images/user.png");
-    background-size:25px;
-    background-repeat:no-repeat;
+    background-image:url("../img/user.png");
 }
 
 #email{
-    background-image:url("../images/email.png");
-    background-size:25px;
-    background-repeat:no-repeat;
+    background-image:url("../img/email.png");
 }
 
 #signpassword{
-    background-image:url("../images/password.png");
-    background-size:25px;
-    background-repeat:no-repeat;
+    background-image:url("../img/password.png");
 }
 
 #confsignpassword{
-    background-image:url("../images/confirmation.png");
-    background-size:25px;
-    background-repeat:no-repeat;
+    background-image:url("../img/confirmation.png");
 }
 
 #address{
-    background-image:url("../images/address.png");
-    background-size:25px;
-    background-repeat:no-repeat;
+    background-image:url("../img/address.png");
 }
 
 #payment{
-    background-image:url("../images/credit-card.png");
-    background-size:25px;
-    background-repeat:no-repeat;
+    background-image:url("../img/credit-card.png");
 }
 
 /*** SHOPPING CART***/
-#cart_body{
-    background-color: white;
+.cart_content{
     text-align: left;
-    margin:0;
-}
-
-.cart_container{
-    margin-left: 8em;
-    padding-right: 10em;
-    right:0;
 }
 
 .cart_categories{
@@ -416,7 +375,6 @@ body {
 
 .shopping_cart{
     display: grid;
-    margin-left:3em;
     grid-gap:30px 0;
     padding-bottom: 5em;
 }
