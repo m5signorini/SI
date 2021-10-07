@@ -15,6 +15,7 @@ def index():
     catalogue = json.loads(catalogue_data)
     return render_template('index.html', title = "Home", movies=catalogue['peliculas'])
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
@@ -36,17 +37,21 @@ def login():
         print (request.referrer, file=sys.stderr)
         return render_template('login.html', title = "Login")
 
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     return render_template('signup.html', title = "Sign Up")
+
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
     return render_template('cart.html', title = "Shopping Cart")
 
+
 @app.route('/movie_page',methods=['GET', 'POST'])
 def movie_page():
     return render_template('movie_page.html', title = "")
+
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
