@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>title</title>
+        <link rel="stylesheet" href="../static/master.css">
+    </head>
+
+    <body id="login_body">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo_container">
+                <img class="main_logo" src="../static/logo2.png" alt="">
+            </div>
+            <div class="app_name">
+                <h1>Foro Peliculas</h1>
+            </div>
+            <div class="login_container_index">
+                <img class="user_icon" src="../static/user.png" alt="">
+                <a href="{{ url_for('login') }}">Iniciar sesión</a>
+                <a href="{{ url_for('signup') }}">Registrarse</a>
+            </div>
+        </div>
+        <!-- SIDE MENU -->
+        <div class="side_menu">
+            <div class="side_links">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Catalogue</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="{{ url_for('cart') }}">Carrito</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- LOGIN CONTAINER -->
+        <div class="login_container">
+            <div class="login_content">
+                <h1>WELCOME BACK</h1>
+                <input type="text" placeholder="Username" name="username" required>
+
+                <input type="password" placeholder="Password" name="password" required>
+
+                <button type="submit">Login</button>
+
+                <li><h2>Not Registered?</h2><a href="{{ url_for('signup') }}">Create an Acount</a></li>
+            </div>
+        </div>
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="">
+                <p>© 2021 Footer Inc. All Rights Reserved</p>
+            </div>
+        </div>
+
+    </body>
+
+</html>
