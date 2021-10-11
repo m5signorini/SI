@@ -2,8 +2,9 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>title</title>
+        <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="../static/css/master.css">
+        {% block head_scripts %}{% endblock %}
     </head>
 
     <body>
@@ -40,7 +41,7 @@
         </div>
         <!-- CONTENT -->
         <div class="content">
-            
+            {% block content %}{% endblock %}
         </body>
 
 </html>

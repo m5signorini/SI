@@ -1,92 +1,55 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>title</title>
-        <link rel="stylesheet" href="../static/css/master.css">
-        <script src="../static/scripts/main.js"></script>
-    </head>
+{% extends "base.html" %}
 
-    <body id="movie_body">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo_container">
-                <img class="main_logo" src="../static/img/logo2.png" alt="">
-            </div>
-            <div class="app_name">
-                <h1>Foro Peliculas</h1>
-            </div>
-            <div class="login_links">
-                <img class="user_icon" src="../static/img/user.png" alt="">
-                <a href="{{ url_for('login') }}">Iniciar sesión</a>
-                <a href="{{ url_for('signup') }}">Registrarse</a>
-            </div>
-        </div>
-        <!-- SIDE MENU -->
-        <div class="side_menu">
-            <div class="side_links">
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Catalogue</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="{{ url_for('cart') }}">Carrito</a></li>
-                </ul>
-            </div>
-        </div>
-        <!-- MOVIE CONTAINER -->
-        <div class="movie_container">
-            <div class="movie_content">
-                <div class="top_part">
-                        <div class="image_movie">
-                            <img src="../static/img/sample1.jpg">
-                        </div>
-                        <div class="movie_info">
-                            <h1>Mad Max</h1>
-                            <div class="movie_extra">
-                                <div class="movie_info_">
-                                    <div class="movie_info__">
-                                        <span>2021</span>
-                                        <span>120 minutos</span>
-                                    </div>
-                                    <a href="#">Accion</a>
-                                </div>
-                                <div class="movie_rating">
+{% block title %}Pelicula{% endblock %}
+{% block head_scripts %}
+<script type="text/javascript" src="../static/scripts/jquery-3.6.0.js"></script>
+<script src="../static/scripts/movie_page.js"></script>
+{% endblock %}
 
-                                </div>
-                            </div>
-                            <div class="purchase">
-                                <button class="purchase_button">Añadir al carrito</button>
-                            </div>
+{% block content %}
+<div class="movie_content">
+    <div class="top_part">
+            <div class="image_movie">
+                <img src="../static/img/sample1.jpg">
+            </div>
+            <div class="movie_info">
+                <h1>Mad Max</h1>
+                <div class="movie_extra">
+                    <div class="movie_info_">
+                        <div class="movie_info__">
+                            <span>2021</span>
+                            <span>120 minutos</span>
                         </div>
+                        <a href="#">Accion</a>
                     </div>
-                    <div class="bottom_part">
-                        <div class="movie_description">
-                            <p class="text">Mad Max is an Australian post-apocalyptic action film series and media franchise created by George Miller and Byron Kennedy.
-                                It began in 1979 with Mad Max, and was followed by three sequels: Mad Max 2 (1981, released in the United States as The Road Warrior),
-                                Mad Max Beyond Thunderdome (1985) and Mad Max: Fury Road (2015); Miller directed or co-directed all four films.<span class="more_text">Mel Gibson starred in the first three films and Tom Hardy took over as Max in the fourth film.
-                                The series follows the adventures of Max Rockatansky, a police officer in a future Australia which is experiencing societal
-                                collapse due to war and critical resource shortages. When his wife and child are murdered by a vicious biker gang, Max kills them in revenge
-                                and becomes a drifting loner in the Wasteland. As Australia devolves further into barbarity, this skilled warrior of the road finds himself
-                                helping pockets of civilization, initially for his own self-interest, but his motives always drift into more altruistic ones.
-                                The series has been well-received by critics, with each film marked "Certified Fresh" on the film review aggregation website Rotten Tomatoes; Mad Max 2 and Fury Road in
-                                particular have been ranked among the best action films ever made. The series has also had a significant influence on popular culture, most notably apocalyptic and
-                                post-apocalyptic fiction, and encompasses works in additional media, including video games and comic books. In 2016, Fury Road became the first film
-                                of the Mad Max franchise to receive Academy Award recognition, winning six of its ten nominations.
-                            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span></p>
-                        </div>
-                        <button class="see_more">See more</button>
+                    <div class="movie_rating">
+
                     </div>
                 </div>
-            </div>
-            <!-- FOOTER -->
-            <div class="footer">
-                <div class="">
-                    <p>© 2021 Footer Inc. All Rights Reserved</p>
+                <div class="purchase">
+                    <button class="purchase_button">Añadir al carrito</button>
                 </div>
             </div>
-    </body>
-
-</html>
+    </div>
+    <div class="bottom_part">
+        <div class="movie_description">
+            <p class="text">Mad Max is an Australian post-apocalyptic action film series and media franchise created by George Miller and Byron Kennedy.
+                It began in 1979 with Mad Max, and was followed by three sequels: Mad Max 2 (1981, released in the United States as The Road Warrior),
+                Mad Max Beyond Thunderdome (1985) and Mad Max: Fury Road (2015); Miller directed or co-directed all four films.<span class="more_text">Mel Gibson starred in the first three films and Tom Hardy took over as Max in the fourth film.
+                The series follows the adventures of Max Rockatansky, a police officer in a future Australia which is experiencing societal
+                collapse due to war and critical resource shortages. When his wife and child are murdered by a vicious biker gang, Max kills them in revenge
+                and becomes a drifting loner in the Wasteland. As Australia devolves further into barbarity, this skilled warrior of the road finds himself
+                helping pockets of civilization, initially for his own self-interest, but his motives always drift into more altruistic ones.
+                The series has been well-received by critics, with each film marked "Certified Fresh" on the film review aggregation website Rotten Tomatoes; Mad Max 2 and Fury Road in
+                particular have been ranked among the best action films ever made. The series has also had a significant influence on popular culture, most notably apocalyptic and
+                post-apocalyptic fiction, and encompasses works in additional media, including video games and comic books. In 2016, Fury Road became the first film
+                of the Mad Max franchise to receive Academy Award recognition, winning six of its ten nominations.
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span></p>
+        </div>
+        <button class="see_more">See more</button>
+    </div>
+</div>
+{% endblock %}

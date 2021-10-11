@@ -450,11 +450,6 @@ body {
 }
 
 /***Movie Page***/
-#movie_body{
-    background-color: white;
-    margin:0;
-}
-
 .movie_container{
     margin-left: 5em;
     margin-top: 5em;

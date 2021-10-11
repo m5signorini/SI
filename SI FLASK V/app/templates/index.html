@@ -1,127 +1,88 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>title</title>
-        <link rel="stylesheet" href="../static/css/master.css">
-    </head>
+{% extends "base.html" %}
 
-    <body>
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo_container">
-                <img class="main_logo" src="../static/img/logo2.png" alt="">
-            </div>
-            <div class="app_name">
-                <h1>Foro Peliculas</h1>
-            </div>
-            <div class="login_container_index">
-                <img class="user_icon" src="../static/img/user.png" alt="">
-                <a href="{{ url_for('login') }}">Iniciar sesión</a>
-                <a href="{{ url_for('signup') }}">Registrarse</a>
-            </div>
-        </div>
-        <!-- FOOTER -->
-        <div class="footer">
-            <div class="">
-                <p>© 2021 Footer Inc. All Rights Reserved</p>
-            </div>
-        </div>
-        <!-- SIDE MENU -->
-        <div class="side_menu">
-            <div class="side_links">
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Catalogue</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="{{ url_for('cart') }}">Carrito</a></li>
-                </ul>
-            </div>
-        </div>
-        <!-- CONTENT -->
-        <div class="content">
-            <div class="searcher">
-                <div class="searchbox">
-                    <input type="text" placeholder="Search...">
-                </div>
-                <div class="filterbox">
-                    <div class="filter">
-                        <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-                    </div>
-                    <div class="filter">
-                        <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-                    </div>
-                </div>
-            </div>
-            <div class="movies_container">
-                {% for item in movies %}
-                <div class="movie_preview">
-                    <div class="movie_title">
-                        <h2>{{ item.titulo }}</h2>
-                    </div>
-                    <div class="movie_quickdata">
-                        <span class="director">{{ item.director }}</span>
-                        <span class="category">{{ item.categoria }}</span>
-                        <span class="price">{{ item.precio }}</span>
-                    </div>
-                    <div class="movie_poster">
-                        <a href="{{ url_for('movie_page') }}">
-                            <img src={{item.poster}} alt="">
-                        </a>
-                    </div>
-                    <div class="movie_synopsis">
-                        <span>{{ item.descripcion }}</span>
-                    </div>
-                    <div class="movie_footer">
-                        <div class="movie_add_to_cart">
-                            <button type="button" name="add_to_cart">Añadir a la carta</button>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </body>
+{% block title %} Indice {% endblock %}
 
-</html>
+{% block content%}
+<div class="searcher">
+    <div class="searchbox">
+        <input type="text" placeholder="Search...">
+    </div>
+    <div class="filterbox">
+        <div class="filter">
+            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
+        </div>
+        <div class="filter">
+            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
+        </div>
+    </div>
+</div>
+<div class="movies_container">
+    {% for item in movies %}
+    <div class="movie_preview">
+        <div class="movie_title">
+            <h2>{{ item.titulo }}</h2>
+        </div>
+        <div class="movie_quickdata">
+            <span class="director">{{ item.director }}</span>
+            <span class="category">{{ item.categoria }}</span>
+            <span class="price">{{ item.precio }}</span>
+        </div>
+        <div class="movie_poster">
+            <a href="{{ url_for('movie_page') }}">
+                <img src={{item.poster}} alt="">
+            </a>
+        </div>
+        <div class="movie_synopsis">
+            <span>{{ item.descripcion }}</span>
+        </div>
+        <div class="movie_footer">
+            <div class="movie_add_to_cart">
+                <button type="button" name="add_to_cart">Añadir a la carta</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+ {% endblock %}

@@ -1,143 +1,100 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>title</title>
-        <link rel="stylesheet" href="../static/css/master.css">
-    </head>
+{% extends "base.html" %}
 
-    <body>
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo_container">
-                <img class="main_logo" src="../static/img/logo2.png" alt="">
-            </div>
-            <div class="app_name">
-                <h1>Foro Peliculas</h1>
-            </div>
-            <div class="login_container_index">
-                <img class="user_icon" src="../static/img/user.png" alt="">
-                <a href="{{ url_for('login') }}">Iniciar sesión</a>
-                <a href="{{ url_for('signup') }}">Registrarse</a>
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+<div class="cart_content">
+    <div class="shopping_cart">
+        <div class="cart_categories">
+            <span>SHOPPING CART</span>
+            <div class="cart_tags">
+                <p class="price_tag">Price</p>
+                <p class="quantity_tag">Quantity</p>
+                <p class="total_tag">Total</p>
             </div>
         </div>
-        <!-- SIDE MENU -->
-        <div class="side_menu" id="menu_cart">
-            <div class="side_links">
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Catalogue</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="{{ url_for('cart') }}">Carrito</a></li>
-                </ul>
+        <div class="cart_product">
+            <img class="product_image" src="../static/img/sample1.jpg">
+            <div class="product_dcp">
+                <p>Mad Max</p>
+                <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
             </div>
-        </div>
-
-        <!-- CART CONTAINER -->
-        <div class="content">
-            <div class="cart_content">
-                <div class="shopping_cart">
-                    <div class="cart_categories">
-                        <span>SHOPPING CART</span>
-                        <div class="cart_tags">
-                            <p class="price_tag">Price</p>
-                            <p class="quantity_tag">Quantity</p>
-                            <p class="total_tag">Total</p>
-                        </div>
-                    </div>
-                    <div class="cart_product">
-                        <img class="product_image" src="../static/img/sample1.jpg">
-                        <div class="product_dcp">
-                            <p>Mad Max</p>
-                            <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
-                        </div>
-                        <div class="product_price">$12.99</div>
-                        <div class="product_quantity">
-                            <input type="number" value="1" min="1"></input>
-                        </div>
-                        <button class="product_remove">Remove</button>
-                        <div class="products_total_price">$12.99</div>
-                    </div>
-                    <div class="cart_product">
-                        <img class="product_image" src="../static/img/sample1.jpg">
-                        <div class="product_dcp">
-                            <p>Mad Max</p>
-                            <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
-                        </div>
-                        <div class="product_price">$12.99</div>
-                        <div class="product_quantity">
-                            <input type="number" value="1" min="1"></input>
-                        </div>
-                        <button class="product_remove">Remove</button>
-                        <div class="products_total_price">$12.99</div>
-                    </div>
-                    <div class="cart_product">
-                        <img class="product_image" src="../static/img/sample1.jpg">
-                        <div class="product_dcp">
-                            <p>Mad Max</p>
-                            <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
-                        </div>
-                        <div class="product_price">$12.99</div>
-                        <div class="product_quantity">
-                            <input type="number" value="1" min="1"></input>
-                        </div>
-                        <button class="product_remove">Remove</button>
-                        <div class="products_total_price">$12.99</div>
-                    </div>
-                    <div class="cart_product">
-                        <img class="product_image" src="../static/img/sample1.jpg">
-                        <div class="product_dcp">
-                            <p>Mad Max</p>
-                            <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
-                        </div>
-                        <div class="product_price">$12.99</div>
-                        <div class="product_quantity">
-                            <input type="number" value="1" min="1"></input>
-                        </div>
-                        <button class="product_remove">Remove</button>
-                        <div class="products_total_price">$12.99</div>
-                    </div>
-                    <div class="cart_product">
-                        <img class="product_image" src="../static/img/sample1.jpg">
-                        <div class="product_dcp">
-                            <p>Mad Max</p>
-                            <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
-                        </div>
-                        <div class="product_price">$12.99</div>
-                        <div class="product_quantity">
-                            <input type="number" value="1" min="1"></input>
-                        </div>
-                        <button class="product_remove">Remove</button>
-                        <div class="products_total_price">$12.99</div>
-                    </div>
-                    <div class="cart_product">
-                        <img class="product_image" src="../static/img/sample1.jpg">
-                        <div class="product_dcp">
-                            <p>Mad Max</p>
-                            <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
-                        </div>
-                        <div class="product_price">$12.99</div>
-                        <div class="product_quantity">
-                            <input type="number" value="1" min="1"></input>
-                        </div>
-                        <button class="product_remove">Remove</button>
-                        <div class="products_total_price">$12.99</div>
-                    </div>
-                    <div class="checkout_part">
-                        <div class="total_price_calculation">$XXX</div>
-                        <button class="checkout">Checkout</button>
-                    </div>
-                </div>
+            <div class="product_price">$12.99</div>
+            <div class="product_quantity">
+                <input type="number" value="1" min="1"></input>
             </div>
+            <button class="product_remove">Remove</button>
+            <div class="products_total_price">$12.99</div>
         </div>
-
-        <!-- FOOTER -->
-        <div class="footer">
-            <div class="">
-                <p>© 2021 Footer Inc. All Rights Reserved</p>
+        <div class="cart_product">
+            <img class="product_image" src="../static/img/sample1.jpg">
+            <div class="product_dcp">
+                <p>Mad Max</p>
+                <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
             </div>
+            <div class="product_price">$12.99</div>
+            <div class="product_quantity">
+                <input type="number" value="1" min="1"></input>
+            </div>
+            <button class="product_remove">Remove</button>
+            <div class="products_total_price">$12.99</div>
         </div>
-
-    </body>
-
-</html>
+        <div class="cart_product">
+            <img class="product_image" src="../static/img/sample1.jpg">
+            <div class="product_dcp">
+                <p>Mad Max</p>
+                <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
+            </div>
+            <div class="product_price">$12.99</div>
+            <div class="product_quantity">
+                <input type="number" value="1" min="1"></input>
+            </div>
+            <button class="product_remove">Remove</button>
+            <div class="products_total_price">$12.99</div>
+        </div>
+        <div class="cart_product">
+            <img class="product_image" src="../static/img/sample1.jpg">
+            <div class="product_dcp">
+                <p>Mad Max</p>
+                <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
+            </div>
+            <div class="product_price">$12.99</div>
+            <div class="product_quantity">
+                <input type="number" value="1" min="1"></input>
+            </div>
+            <button class="product_remove">Remove</button>
+            <div class="products_total_price">$12.99</div>
+        </div>
+        <div class="cart_product">
+            <img class="product_image" src="../static/img/sample1.jpg">
+            <div class="product_dcp">
+                <p>Mad Max</p>
+                <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
+            </div>
+            <div class="product_price">$12.99</div>
+            <div class="product_quantity">
+                <input type="number" value="1" min="1"></input>
+            </div>
+            <button class="product_remove">Remove</button>
+            <div class="products_total_price">$12.99</div>
+        </div>
+        <div class="cart_product">
+            <img class="product_image" src="../static/img/sample1.jpg">
+            <div class="product_dcp">
+                <p>Mad Max</p>
+                <span>En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica. Se puede apreciar un entorno desordenado y distópico.</span>
+            </div>
+            <div class="product_price">$12.99</div>
+            <div class="product_quantity">
+                <input type="number" value="1" min="1"></input>
+            </div>
+            <button class="product_remove">Remove</button>
+            <div class="products_total_price">$12.99</div>
+        </div>
+        <div class="checkout_part">
+            <div class="total_price_calculation">$XXX</div>
+            <button class="checkout">Checkout</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
