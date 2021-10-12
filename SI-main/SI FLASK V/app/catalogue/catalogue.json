@@ -1,0 +1,52 @@
+{
+    "peliculas": [
+        {
+            "id": 0,
+            "titulo": "La guerra de las galaxias: Episodio 1-La amenaza fantasma",
+            "poster": "../static/img/sample2.jpg",
+            "director": "George Lucas",
+            "precio": 18.99,
+            "categoria": ["Aventura","Fantasia","Accion"],
+            "duracion": "150 minutos",
+            "anno": 1999,
+            "descripcion_resumen":"Star Wars: Episodio I - La amenaza fantasma (título original en inglés: Star Wars: Episode I - The Phantom Menace; también conocida en español como La guerra de las galaxias: Episodio I - La amenaza fantasma) es una película de space opera nota 1. de 1999, escrita y dirigida por el director de cine estadounidense George Lucas.",
+            "descripcion_extra":"Es la cuarta entrega de la saga Star Wars y la primera en el orden cronológico de la misma, después de un paréntesis de veintidós años del lanzamiento de Una nueva esperanza.La trama describe la historia del maestro jedi Qui-Gon Jinn y de su aprendiz Obi-Wan Kenobi, que escoltan y protegen a la Reina Amidala desde su planeta Naboo hasta Coruscant con la esperanza de encontrar una salida pacífica a un conflicto comercial interplanetario a gran escala. También trata del joven Anakin Skywalker antes de convertirse en Jedi, presentado como un esclavo con un potencial de la Fuerza inusualmente fuerte, y debe lidiar con el misterioso regreso de los Sith.",
+            "actores": [
+                {
+                    "nombre": "Jake Lloyd",
+                    "personaje": "Anakin Skywalker",
+                    "foto": "imagenes/sample2.jpg"
+                },
+                {
+                    "nombre": "Ewan McGregor",
+                    "personaje": "Obi-Wan Kenobi",
+                    "foto": "imagenes/kenobi.jpg"
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "titulo": "Mad Max",
+            "poster": "../static/img/sample1.jpg",
+            "director": "George Miller",
+            "precio": 14.99,
+            "categoria": ["Accion","Aventura","Ciencia Ficcion"],
+            "duracion": "120 minutos",
+            "anno": 2015,
+            "descripcion_resumen":"En un futuro apocalíptico marcado por la escasez de agua, petróleo y energía, crisis económica y el caos social, las pandillas de facciones dominan las carreteras de Australia, donde no existe presencia del Estado por la crisis económica.",
+            "descripcion_extra": "Se puede apreciar un entorno desordenado y distópico. Mientras la sociedad se desintegra en el país, una patrulla de policías conocidos como la Patrulla de Fuerza Central (MFP, Main Force Patrol en inglés) se encarga de mantener la seguridad vial en algunas carreteras. En ella se encuentra Max Rockatansky (Mel Gibson), considerado como el mejor de los patrulleros de su división. Max trabaja en un edificio de Juzgado arruinado por dentro y por fuera, por la falta de recursos económicos del gobierno, que a la vez es el cuartel central de la Patrulla.",
+            "actores": [
+                {
+                    "nombre": "Tom Hardy",
+                    "personaje": "Max Rockatansky",
+                    "foto": "imagenes/anakin.jpg"
+                },
+                {
+                    "nombre": "Charlize Teron",
+                    "personaje": "Imperator Furiosa",
+                    "foto": "imagenes/kenobi.jpg"
+                }
+            ]
+        }
+    ]
+}
