@@ -23,10 +23,29 @@ for i in catalogue['peliculas']:
             aux.add(i["id"])
             dict_genres[j] = aux
 
+"""
+FUNCIONES AUXILIARES
+"""
+
+def get_session_user():
+    user = {'is_authenticated': False, 'username': None}
+    if 'usuario' in session:
+        user['is_authenticated'] = True
+    return user
+
+def validate_user():
+    return
+
+
+"""
+FUNCIONES DE ENRUTAMIENTO
+"""
+
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title = "Home", movies=catalogue['peliculas'], categories=dict_genres.keys())
+    # Comprobar si la sesion actual es la de un usuario autenticado
+    return render_template('index.html', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -41,19 +60,19 @@ def login():
             return redirect(url_for('index'))
         else:
             # aqui se le puede pasar como argumento un mensaje de login invalido
-            return render_template('login.html', title = "Sign In")
+            return render_template('login.html', user=get_session_user())
     else:
         # se puede guardar la pagina desde la que se invoca
         session['url_origen']=request.referrer
         session.modified=True
         # print a error.log de Apache si se ejecuta bajo mod_wsgi
         print (request.referrer, file=sys.stderr)
-        return render_template('login.html', title = "Login")
+        return render_template('login.html', user=get_session_user())
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('signup.html', title = "Sign Up")
+    return render_template('signup.html', user=get_session_user())
 
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -64,7 +83,7 @@ def cart():
         aux = catalogue['peliculas'][int(i[0])]
         movies_in_cart.append((aux,i[1],i[1]*aux["precio"]))
 
-    return render_template('cart.html', title = "Shopping Cart", movies_in_cart=movies_in_cart)
+    return render_template('cart.html', movies_in_cart=movies_in_cart, user=get_session_user())
 
 @app.route('/add_to_cart/<string:movie_id>')
 def add_to_cart(movie_id):
@@ -89,7 +108,7 @@ def add_to_cart(movie_id):
 
 @app.route('/movie_page',methods=['GET', 'POST'])
 def movie_page():
-    return render_template('movie_page.html', title = "")
+    return render_template('movie_page.html', user=get_session_user())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
