@@ -124,4 +124,4 @@ def logout():
 @app.route('/num_visitors', methods=['GET', 'POST'])
 def num_visitors():
     n = random.randint(0,100)
-    return render_template('append/visitors.html', num_visitors=n)
+    return n
