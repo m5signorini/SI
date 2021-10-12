@@ -142,13 +142,14 @@ body {
 }
 
 .movie_preview {
-    height: 350px;
+    height: 380px;
     width: 320px;
     border: 1px solid lightgray;
     margin: 0px 15px 10px 15px;
 }
 
 .movie_title {
+    height: 40px;
     padding: 5px;
     text-align: center;
     font-size: 11px;
