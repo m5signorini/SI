@@ -4,12 +4,12 @@
 
 {% block content %}
 <div class="login_content">
-    <h1>WELCOME BACK</h1>
-    <form class="user_form" action="index.html" method="post">
-        <input type="text" placeholder="Username" name="username" required>
-        <input type="password" placeholder="Password" name="password" required>
-        <button type="submit">Login</button>
+    <h1>BIENVENIDO DE NUEVO</h1>
+    <form class="user_form" action="" method="post">
+        <input type="text" placeholder="Nombre de usuarion" name="username" required>
+        <input type="password" placeholder="Contraseña" name="password" required>
+        <button type="submit">Iniciar Sesión</button>
     </form>
-    <li><h2>Not Registered?</h2><a href="{{ url_for('signup') }}">Create an Acount</a></li>
+    <li><h2>¿No estás registrado?</h2><a href="{{ url_for('signup') }}">Crea una cuenta</a></li>
 </div>
 {% endblock %}
