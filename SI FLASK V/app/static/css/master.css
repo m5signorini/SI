@@ -314,7 +314,7 @@ body {
     opacity:50%;
 }
 
-#singusername{
+#signusername{
     background-image:url("../img/user.png");
 }
 
@@ -552,7 +552,7 @@ body {
 
 /*** RESIZE ***/
 @media (max-width: 800px) {
-    /* SING UP */
+    /* SIGN UP */
   .inputs input[type=text], input[type=password]{
       width:100px;
       font-size: 7px;
