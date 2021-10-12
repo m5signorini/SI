@@ -2,60 +2,22 @@
 
 {% block title %} Indice {% endblock %}
 
+{% block head_scripts %}
+<script type="text/javascript" src="../static/scripts/jquery-3.6.0.js"></script>
+<script type="text/javascript" src="../static/scripts/index.js"></script>
+{% endblock %}
+
 {% block content%}
 <div class="searcher">
     <div class="searchbox">
-        <input type="text" placeholder="Search...">
+        <input id="mySearchBox" type="text" placeholder="Search...">
     </div>
     <div class="filterbox">
+        {% for item in categories %}
         <div class="filter">
-            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
+            <input type="checkbox" name="cat1" value="{{item}}" ><label for="cat1">{{item}}</label>
         </div>
-        <div class="filter">
-            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat4" value=""><label for="cat4">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat1" value=""><label for="cat1">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat2" value=""><label for="cat2">category</label>
-        </div>
-        <div class="filter">
-            <input type="checkbox" name="cat3" value=""><label for="cat3">category</label>
-        </div>
+        {% endfor %}
     </div>
 </div>
 <div class="movies_container">
@@ -79,7 +41,7 @@
         </div>
         <div class="movie_footer">
             <div class="movie_add_to_cart">
-                <button type="button" name="add_to_cart">Añadir a la carta</button>
+                <a href="{{ url_for('add_to_cart', movie_id=item.id) }}"><button type="button" name="add_to_cart">Añadir a la carta</button></a>
             </div>
         </div>
     </div>

@@ -7,13 +7,26 @@ import json
 import os
 import sys
 
+catalogue_data = open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8").read()
+catalogue = json.loads(catalogue_data)
+
+#Hacemos un diccionario para tener ya preparado el filtrado
+dict_genres = dict()
+for i in catalogue['peliculas']:
+    for j in i["categoria"]:
+        if j in dict_genres.keys():
+            aux = dict_genres[j]
+            aux.add(i["id"])
+            dict_genres[j] = aux
+        else:
+            aux = set()
+            aux.add(i["id"])
+            dict_genres[j] = aux
+
 @app.route('/')
 @app.route('/index')
 def index():
-    print (url_for('static', filename='main.css'), file=sys.stderr)
-    catalogue_data = open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8").read()
-    catalogue = json.loads(catalogue_data)
-    return render_template('index.html', title = "Home", movies=catalogue['peliculas'])
+    return render_template('index.html', title = "Home", movies=catalogue['peliculas'], categories=dict_genres.keys())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -45,7 +58,33 @@ def signup():
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
-    return render_template('cart.html', title = "Shopping Cart")
+    movies_ids_cart = session.get('cart', [])
+    movies_in_cart = []
+    for i in movies_ids_cart:
+        aux = catalogue['peliculas'][int(i[0])]
+        movies_in_cart.append((aux,i[1],i[1]*aux["precio"]))
+
+    return render_template('cart.html', title = "Shopping Cart", movies_in_cart=movies_in_cart)
+
+@app.route('/add_to_cart/<string:movie_id>')
+def add_to_cart(movie_id):
+
+    if 'cart' not in session:
+        session['cart'] = []
+
+    aux = 0
+
+    for i in session['cart']:
+        if i[0] == movie_id:
+            aux = i[1]
+            session['cart'].remove(i)
+            session['cart'].append((movie_id,aux+1))
+            break
+
+    if aux == 0:
+        session['cart'].append((movie_id,1))
+
+    return redirect("/cart")
 
 
 @app.route('/movie_page',methods=['GET', 'POST'])
@@ -57,3 +96,6 @@ def movie_page():
 def logout():
     session.pop('usuario', None)
     return redirect(url_for('index'))
+
+
+#@app.route('/user/<string:user>/history')

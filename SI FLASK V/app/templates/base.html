@@ -18,8 +18,12 @@
             </div>
             <div class="login_container_index">
                 <img class="user_icon" src="../static/img/user.png" alt="">
+                { % if user %}
+                <a href="{{ url_for('index') }}">Mi cuenta</a>
+                { % else %}
                 <a href="{{ url_for('login') }}">Iniciar sesión</a>
                 <a href="{{ url_for('signup') }}">Registrarse</a>
+                { % endif %}
             </div>
         </div>
         <!-- FOOTER -->
