@@ -6,6 +6,7 @@ from flask import render_template, request, url_for, redirect, session
 import json
 import os
 import sys
+import random
 
 catalogue_data = open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8").read()
 catalogue = json.loads(catalogue_data)
@@ -118,3 +119,9 @@ def logout():
 
 
 #@app.route('/user/<string:user>/history')
+
+# Ruta para numero visitas
+@app.route('/num_visitors', methods=['GET', 'POST'])
+def num_visitors():
+    n = random.randint(0,100)
+    return render_template('append/visitors.html', num_visitors=n)
