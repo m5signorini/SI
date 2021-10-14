@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Pelicula{% endblock %}
+{% block head_scripts %}
+<script type="text/javascript"  src="../static/scripts/movie_page.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="movie_content">
+    <div class="top_part">
+            <div class="image_movie">
+                <img src="{{movie.poster}}">
+            </div>
+            <div class="movie_info">
+                <h1>{{movie.titulo}}</h1>
+                <div class="movie_extra">
+                    <div class="movie_info_">
+                        <div class="movie_info__">
+                            <span>{{movie.anno}}</span>
+                            <span>{{movie.duracion}}</span>
+                        </div>
+                        <a href="">{{movie.categoria}}</a>
+                    </div>
+                    <div class="movie_rating">
+
+                    </div>
+                </div>
+                <div class="purchase">
+                    <button class="purchase_button">Añadir al carrito</button>
+                </div>
+            </div>
+    </div>
+    <div class="bottom_part">
+        <div class="movie_description">
+            <p class="text">{{movie.descripcion_resumen}}<span class="more_text">{{movie.descripcion_extra}}</span></p>
+        </div>
+        <button class="see_more">Ver más</button>
+    </div>
+</div>
+{% endblock %}

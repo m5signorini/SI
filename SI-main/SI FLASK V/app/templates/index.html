@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %} Indice {% endblock %}
+
+{% block head_scripts %}
+<script type="text/javascript" src="../static/scripts/index.js"></script>
+{% endblock %}
+
+{% block content%}
+<div class="searcher">
+    <div class="searchbox">
+        <input id="mySearchBox" type="text" placeholder="Search...">
+    </div>
+    <div class="filterbox">
+        {% for item in categories %}
+        <div class="filter">
+            <input type="checkbox" name="cat1" value="{{item}}" ><label for="cat1">{{item}}</label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="movies_container">
+    {% for item in movies %}
+    <div class="movie_preview">
+        <div class="movie_title">
+            <h2>{{ item.titulo }}</h2>
+        </div>
+        <div class="movie_quickdata">
+            <span class="director">{{ item.director }}</span>
+            <span class="category">{{ item.categoria }}</span>
+            <span class="price">{{ item.precio }}</span>
+        </div>
+        <div class="movie_poster">
+            <a href="{{ url_for('movie_page', id=item.id) }}">
+                <img src={{item.poster}} alt="">
+            </a>
+        </div>
+        <div class="movie_synopsis">
+            <span>{{ item.descripcion_resumen }}</span>
+        </div>
+        <div class="movie_footer">
+            <div class="movie_add_to_cart">
+                <a href="{{ url_for('add_to_cart', movie_id=item.id) }}"><button type="button" name="add_to_cart">Añadir a la carta</button></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+ {% endblock %}

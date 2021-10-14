@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Historial{% endblock %}
+
+{% block content %}
+<div class="history_content">
+    <h1>HISTORIAL DE COMPRAS</h1>
+    <table class="history_products">
+        <tr>
+            <th>Peliculas Compradas</th>
+            <th>Fecha de Compra</th>
+            <th>Importe</th>
+        </tr>
+        {% for item in history %}
+        <tr class="history_product">
+            <th>{{item.peliculas_compradas}}</th>
+            <th>{{item.fecha}}</th>
+            <th>{{item.precio_compra}}</th>
+        </tr>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

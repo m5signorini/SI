@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Historial{% endblock %}
+{% block head_scripts %}
+<script type="text/javascript" src="../static/scripts/checkout.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="checkout_content">
+    <h1>FINALIZAR COMPRA DE DVDS</h1>
+    <form class="user_form" action="{{ url_for('checkout_pay') }}" method="post">
+        <div class="checkout_products">
+
+            <div class="checkout_money">
+                <div class="checkout_base_price">
+                    <span>Numero de Productos:</span>
+                    <span>{{ num_products }}</span>
+                </div>
+                <div class="checkout_price">
+                    <span>Importe Total:</span>
+                    <span>{{ total_price }}</span>
+                </div>
+                <div class="checkout_user">
+                    <span>Saldo Actual:</span>
+                    <span>{{ user_money }}</span>
+                </div>
+            </div>
+
+            <div class="checkout_points_part">
+                <input id="points" name="points" type="number" min="0" step="100" value="0" required>
+                <div><span id="points_balance">Te quedan {{user_points}} puntos</span></div>
+                <p>Cada 100 puntos equivalen a 1$</p>
+            </div>
+        </div>
+        <button class="checkout_button" type="submit">Finalizar Pedido</button>
+    </form>
+</div>
+{% endblock %}
