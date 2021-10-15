@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from app import app
-from flask import render_template, request, url_for, redirect, session
+from flask import render_template, request, url_for, redirect, session, abort, jsonify
 import json
 import os
 import sys
@@ -116,8 +116,36 @@ class User:
         return True
 
 
-    def update_on_server(self):
-        return
+    def update_on_server(self, *, update_data=False, update_history=False):
+        """
+        Usando los datos de este objeto, actualiza los valores guardados en
+        su correspondiente fichero data.dat y en history.json
+        """
+        # Comprobar validez del usuario
+        if not self.is_authenticated:
+            return False
+
+        # Actualizar data.dat
+        if update_data:
+            path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
+            if not os.path.exists(path):
+                return False
+
+            # Obtiene previo y guarda
+            file = open(path, encoding="utf-8").read()
+            data = json.loads(file)
+            # Por ahora solo se puede modificar el dinero y los puntos
+            data['points'] = self.points
+            data['money'] = self.money
+
+            with open(path 'w', encoding='utf-8') as outfile:
+                json.dump(data, outfile, ensure_ascii=False, indent=4)
+
+        # Actualizar history.json
+        if update_history:
+            return self.set_history_to_server()
+
+        return True
 
 
     def create_on_server(self, form):
@@ -219,7 +247,7 @@ class User:
         if not self.is_authenticated:
             return False
 
-        path = os.path.join(app.root_path, "usuarios/"+username+"/history.json")
+        path = os.path.join(app.root_path, "usuarios/"+self.username+"/history.json")
         if not os.path.exists(path):
             return False
 
@@ -235,7 +263,7 @@ class User:
         if not self.is_authenticated:
             return False
 
-        path = os.path.join(app.root_path, "usuarios/"+username+"/history.json")
+        path = os.path.join(app.root_path, "usuarios/"+self.username+"/history.json")
         if not os.path.exists(path):
             return False
 
@@ -302,37 +330,6 @@ def login_post():
     # Si no hay formulario
     return render_template('login.html', user=get_session_user())
 
-    """
-    if 'username' in request.form:
-        # aqui se deberia validar con fichero .dat del usuario
-        path = os.path.join(app.root_path,"usuarios/"+request.form['username'] + "/data.dat")
-        print(path)
-        if os.path.exists(path) == True:
-            user_data = open(path, encoding="utf-8").read()
-            user = json.loads(user_data)
-            h = hashlib.blake2b()
-            h.update(request.form['password'].encode())
-
-            if compare_digest(h.hexdigest(),user['signpassword']):
-                session['usuario'] = request.form['username']
-                session.modified=True
-                # se puede usar request.referrer para volver a la pagina desde la que se hizo login
-                return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
-            else:
-                # aqui se le puede pasar como argumento un mensaje de login invalido
-                return render_template('login.html', user=get_session_user())
-        else:
-            # aqui se le puede pasar como argumento un mensaje de login invalido
-            return render_template('login.html', user=get_session_user())
-    else:
-        # se puede guardar la pagina desde la que se invoca
-        session['url_origen']=request.referrer
-        session.modified=True
-        # print a error.log de Apache si se ejecuta bajo mod_wsgi
-        print (request.referrer, file=sys.stderr)
-        return render_template('login.html', user=get_session_user())
-    """
-
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -344,6 +341,7 @@ def signup():
         except ExistingUserException:
             # TODO: Aviso de usuario ya existente
             return redirect(url_for('index'))
+
         # Si no ocurre ExistingUserException:
         if signup_ok:
             # Registro Correcto
@@ -353,37 +351,6 @@ def signup():
             return redirect(url_for('index'))
     # Si solo se quiere la pagina
     return render_template('signup.html', user=get_session_user())
-
-    """
-    if 'signusername' in request.form:
-        path = "app/usuarios/" + request.form['signusername']
-        print(request.form['signusername'])
-        try:
-            os.mkdir(path)
-        except OSError:
-            print("Creation of the directory %s failed" % path)
-        else:
-            print("Succesfully created the directory %s" % path)
-
-        auxDict = request.form.to_dict()
-        auxDict['saldo'] = random.randint(0,100)
-        h = hashlib.blake2b()
-        h.update(auxDict['signpassword'].encode())
-        auxDict['signpassword'] = h.hexdigest()
-        auxDict['puntos'] = 0
-
-        with open(path+'/data.dat', 'w') as outfile:
-            json.dump(auxDict, outfile)
-
-        history = {"Compras":[]}
-
-        with open(path+'/historial.json', 'w') as outfile:
-            json.dump(history, outfile)
-
-        return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
-    else:
-        return render_template('signup.html', user=get_session_user())
-    """
 
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -444,18 +411,6 @@ def history():
     else:
         abort(401)      # Acceso denegado si no esta iniciado sesion
 
-    """
-    logged_user = get_session_user()
-    if logged_user['is_authenticated'] == True:
-        print(logged_user['username'])
-        history_data = open(os.path.join(app.root_path,'usuarios/'+logged_user['username']+'/historial.json'), encoding="utf-8").read()
-        history = json.loads(history_data)
-
-        return render_template('history.html', user= logged_user,history=history['Compras'])
-
-    else:
-        return
-    """
 
 @app.route('/checkout',methods=['GET', 'POST'])
 def checkout():
@@ -467,17 +422,6 @@ def checkout():
         # TODO: Añadir mensaje de aviso de inicio de sesion necesario
         return redirect(url_for('login'))
 
-    """
-    logged_user = get_session_user()
-    if logged_user['is_authenticated'] == True:
-        aux = get_movies_in_cart_total_price()
-        path = os.path.join(app.root_path,"usuarios/"+logged_user['username'] + "/data.dat")
-        user_data = open(path, encoding="utf-8").read()
-        user = json.loads(user_data)
-        return render_template('checkout.html', user=get_session_user(), num_products=len(aux[0]), total_price=aux[1], user_money = user['saldo'], user_points = user['puntos'])
-    else:
-        return redirect(url_for('login', user=get_session_user()))
-    """
 
 @app.route('/checkout_pay',methods=['GET', 'POST'])
 def checkout_pay():
@@ -553,4 +497,6 @@ Invocadas mediante el metodo abort, e.g: abort(401)
 """
 @app.errorhandler(401)
 def no_access(error):
-    return Response('<Why access is denied string goes here...>', 401, {'WWW-Authenticate':'Basic realm="Login Required"'})
+    mensaje = jsonify({'message':'Failed'})
+    # TODO: Usar template de error
+    return mensaje, 401
