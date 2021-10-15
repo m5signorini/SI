@@ -30,27 +30,29 @@ for i in catalogue['peliculas']:
             dict_genres[j] = aux
 
 """
-FUNCIONES AUXILIARES
+CLASES AUXILIARES
 """
+class ExistingUserException(Exception):
+    def __init__(self, username):
+        self.username = username
+        super().__init__("User already registered: " + username)
+
 
 class User:
     def __init__(self):
         self.is_authenticated = False
-        self.is_valid = False
         self.username = None
         self.email = None
         self.address = None
         self.payment = None
         self.points = 0
         self.money = 0
-
-    def authenticate():
-        return
+        self.history = {'Compras':[]}
 
     def validate_signup_form(self, form):
         """
-        Valida una form con los datos de usuario actualizando el actual y
-        devolviendo True si la validacion ha tenido exito
+        Valida un formulario con los datos de usuario actualizando el objeto
+        actual y devolviendo True si la validacion ha tenido exito
         """
         data = form.to_dict()
         # Comprobar username:
@@ -64,6 +66,7 @@ class User:
         # ExistingUsername
         path = os.path.join(app.root_path, "usuarios/"+data['signusername'])
         if os.path.isdir(path):
+            raise ExistingUserException(data['signusername'])
             return False
 
         # Comprobar email:
@@ -119,12 +122,20 @@ class User:
 
     def create_on_server(self, form):
         """
-        Dada la informacion de una form, la valida y crea el usuario.
+        Dada la informacion de un formulario, la valida y crea el usuario del
+        lado del servidor actualizando este objeto a su vez
         """
         if not self.validate_signup_form(form):
             return False
 
-        path = "app/usuarios/" + self.username
+        # Obtenemos salt y hasheamos
+        password = form['signpassword']
+        salt = os.urandom(16)
+        enco = bytes(password, 'utf-8')
+        hash = hashlib.blake2b(enco, salt=salt).hexdigest()
+
+        # Creamos directorio
+        path = os.path.join(app.root_path, "usuarios/"+self.username)
         try:
             os.mkdir(path)
         except OSError:
@@ -134,8 +145,8 @@ class User:
 
         data = {
             'username': self.username,
-            'salt': 'random_salt',
-            'password': 'hash_password_and_salt',
+            'salt': salt.hex(),
+            'password': hash,
             'payment': self.payment,
             'email': self.email,
             'address': self.address,
@@ -143,15 +154,22 @@ class User:
             'points': self.points
         }
 
-        with open(path+'/data.dat', 'w') as outfile:
-            json.dump(data, outfile)
+        with open(path+'/data.dat', 'w', encoding='utf-8') as outfile:
+            json.dump(data, outfile, ensure_ascii=False, indent=4)
+
+        # Creamos historial.json
+        self.history = {"Compras":[]}
+        with open(path+'/historial.json', 'w', encoding='utf-8') as outfile:
+            json.dump(self.history, outfile, ensure_ascii=False, indent=4)
+
         return True
 
 
     def get_from_server(self, form):
         """
-        Dado el nombre de usuario inicializa este usuario obteniendolo
-        de la carpeta correspondiente, o devuelve False si no existe.
+        Dado un formulario de inicio de sesion inicializa este objeto obteniendo
+        los datos necesarios de la carpeta correspondiente, devolviendo True en
+        caso de que el inicio haya sido correcto
         """
         if 'username' not in form.keys():
             return False
@@ -169,11 +187,17 @@ class User:
 
         file = open(path, encoding="utf-8").read()
         data = json.loads(file)
+
         # Comprobamos la contraseña
+        password = form['password']
         hash = data['password']
-        salt = data['salt']
-        if False:
+        salt = bytes.fromhex(data['salt'])
+        enco = bytes(password, 'utf-8')
+        comp = hashlib.blake2b(enco, salt=salt).hexdigest()
+
+        if compare_digest(hash, comp) is False:
             return False
+
         # Actualizar usuario con los datos:
         self.username = data['username']
         self.email = data['email']
@@ -181,14 +205,52 @@ class User:
         self.payment = data['payment']
         self.money = data['money']
         self.points = data['points']
+        self.is_authenticated = True
+
+        # Actualizar obteniendo historial:
+        self.get_history_from_server()
         return True
 
 
+    def set_history_to_server(self):
+        """
+        Si es un usario registrado guarda su historial en history.json
+        """
+        if not self.is_authenticated:
+            return False
+
+        path = os.path.join(app.root_path, "usuarios/"+username+"/history.json")
+        if not os.path.exists(path):
+            return False
+
+        with open(path, 'w', encoding='utf-8') as outfile:
+            json.dump(self.history, outfile, ensure_ascii=False, indent=4)
+        return True
+
+
+    def get_history_from_server(self):
+        """
+        Si es un usuario registrado carga en self.history su historial
+        """
+        if not self.is_authenticated:
+            return False
+
+        path = os.path.join(app.root_path, "usuarios/"+username+"/history.json")
+        if not os.path.exists(path):
+            return False
+
+        file = open(path, encoding="utf-8").read()
+        self.history = json.loads(file)
+        return True
+
+"""
+METODOS AUXILIARES
+"""
+
 def get_session_user():
-    user = {'is_authenticated': False, 'username': None}
+    user = User()
     if 'usuario' in session:
-        user['is_authenticated'] = True
-        user['username']=session['usuario']
+        user = session['usuario']
     return user
 
 
@@ -213,22 +275,34 @@ FUNCIONES DE ENRUTAMIENTO
 @app.route('/')
 @app.route('/index')
 def index():
-    # Comprobar si la sesion actual es la de un usuario autenticado
     return render_template('index.html', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user())
 
 
-@app.route('/login', methods=['GET', 'POST'])
+# Ejemplo de uso distinto para GET y POST, no necesario estrictamente
+@app.route('/login', methods=['GET'])
 def login():
-    # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
-    user_login = User()
-    login_ok = user_login.get_from_server(request.form)
-
-    if login_ok:
-        session['usuario'] = user_login
-        return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
-
     return render_template('login.html', user=get_session_user())
 
+@app.route('/login', methods=['POST'])
+def login_post():
+    # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
+    print(request.form)
+    if request.form:
+        # Si se manda formulario de inicio de sesion
+        user_login = User()
+        login_ok = user_login.get_from_server(request.form)
+        if login_ok:
+            # Login Correcto
+            session['usuario'] = user_login     # Settear usuario para la sesion
+            session.modified = True             # Automatico aun asi en este caso
+            return redirect(request.referrer)
+        else:
+            # Login Erroneo
+            return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
+    # Si no hay formulario
+    return render_template('login.html', user=get_session_user())
+
+    """
     if 'username' in request.form:
         # aqui se deberia validar con fichero .dat del usuario
         path = os.path.join(app.root_path,"usuarios/"+request.form['username'] + "/data.dat")
@@ -257,18 +331,30 @@ def login():
         # print a error.log de Apache si se ejecuta bajo mod_wsgi
         print (request.referrer, file=sys.stderr)
         return render_template('login.html', user=get_session_user())
+    """
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-
-    user_signup = User()
-    signup_ok = user_signup.create_on_server(request.form)
-    if signup_ok:
-        return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
-
+    if request.form:
+        # Si se manda formulario de registro
+        user_signup = User()
+        try:
+            signup_ok = user_signup.create_on_server(request.form)
+        except ExistingUserException:
+            # TODO: Aviso de usuario ya existente
+            return redirect(url_for('index'))
+        # Si no ocurre ExistingUserException:
+        if signup_ok:
+            # Registro Correcto
+            return redirect(url_for('login'))
+        else:
+            # Registro Erroneo
+            return redirect(url_for('index'))
+    # Si solo se quiere la pagina
     return render_template('signup.html', user=get_session_user())
 
+    """
     if 'signusername' in request.form:
         path = "app/usuarios/" + request.form['signusername']
         print(request.form['signusername'])
@@ -297,13 +383,14 @@ def signup():
         return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
     else:
         return render_template('signup.html', user=get_session_user())
+    """
 
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
     aux = get_movies_in_cart_total_price()
-
     return render_template('cart.html', movies_in_cart=aux[0], user=get_session_user(), total_price=aux[1])
+
 
 @app.route('/cart_update/<int:new_number>/<string:id>', methods=['GET', 'POST'])
 def cart_update(new_number,id):
@@ -320,6 +407,7 @@ def cart_update(new_number,id):
     print(str(new_price) + "/" + str(get_movies_in_cart_total_price()[1]))
 
     return str(new_price) + "/" + str(get_movies_in_cart_total_price()[1])
+
 
 @app.route('/add_to_cart/<string:movie_id>')
 def add_to_cart(movie_id):
@@ -346,8 +434,17 @@ def add_to_cart(movie_id):
 def movie_page(id):
     return render_template('movie_page.html', user=get_session_user(),movie=catalogue['peliculas'][id])
 
+
 @app.route('/history',methods=['GET', 'POST'])
 def history():
+    user = get_session_user()
+    if user.is_authenticated:
+        history = user.history
+        return render_template('history.html', user=user, history=history['Compras'])
+    else:
+        abort(401)      # Acceso denegado si no esta iniciado sesion
+
+    """
     logged_user = get_session_user()
     if logged_user['is_authenticated'] == True:
         print(logged_user['username'])
@@ -358,9 +455,19 @@ def history():
 
     else:
         return
+    """
 
 @app.route('/checkout',methods=['GET', 'POST'])
 def checkout():
+    user = get_session_user()
+    if user.is_authenticated:
+        aux = get_movies_in_cart_total_price()
+        return render_template('checkout.html', user=get_session_user(), num_products=len(aux[0]), total_price=aux[1], user_money = user['saldo'], user_points = user['puntos'])
+    else:
+        # TODO: Añadir mensaje de aviso de inicio de sesion necesario
+        return redirect(url_for('login'))
+
+    """
     logged_user = get_session_user()
     if logged_user['is_authenticated'] == True:
         aux = get_movies_in_cart_total_price()
@@ -370,6 +477,7 @@ def checkout():
         return render_template('checkout.html', user=get_session_user(), num_products=len(aux[0]), total_price=aux[1], user_money = user['saldo'], user_points = user['puntos'])
     else:
         return redirect(url_for('login', user=get_session_user()))
+    """
 
 @app.route('/checkout_pay',methods=['GET', 'POST'])
 def checkout_pay():
@@ -417,11 +525,10 @@ def logout():
     session.pop('cart', None)
     return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
 
-
 #@app.route('/user/<string:user>/history')
 
 # Ruta para numero visitas
-@app.route('/num_visitors', methods=['GET', 'POST'])
+@app.route('/num_visitors', methods=['GET'])
 def num_visitors():
     n = random.randint(0,100)
     return str(n)
@@ -438,3 +545,12 @@ def num_points(change):
         return "No tienes puntos suficientes"
     else:
         return "Te quedan " + str(balance) + " puntos"
+
+
+"""
+RUTAS DE CODIGOS DE ESTADO
+Invocadas mediante el metodo abort, e.g: abort(401)
+"""
+@app.errorhandler(401)
+def no_access(error):
+    return Response('<Why access is denied string goes here...>', 401, {'WWW-Authenticate':'Basic realm="Login Required"'})
