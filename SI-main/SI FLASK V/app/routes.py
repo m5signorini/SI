@@ -13,8 +13,9 @@ from hmac import compare_digest
 import re
 from datetime import datetime
 
-catalogue_data = open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8").read()
-catalogue = json.loads(catalogue_data)
+
+with open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8") as catalogue_fd:
+    catalogue = json.loads(catalogue_fd.read())
 
 #Hacemos un diccionario para tener ya preparado el filtrado
 dict_genres = dict()
@@ -132,8 +133,8 @@ class User:
                 return False
 
             # Obtiene previo y guarda
-            file = open(path, encoding="utf-8").read()
-            data = json.loads(file)
+            with open(path, encoding="utf-8") as file:
+                data = json.loads(file.read())
             # Por ahora solo se puede modificar el dinero y los puntos
             data['points'] = self.points
             data['money'] = self.money
@@ -213,8 +214,8 @@ class User:
         if not os.path.exists(path):
             return False
 
-        file = open(path, encoding="utf-8").read()
-        data = json.loads(file)
+        with open(path, encoding="utf-8") as file:
+            data = json.loads(file.read())
 
         # Comprobamos la contraseña
         password = form['password']
@@ -267,8 +268,8 @@ class User:
         if not os.path.exists(path):
             return False
 
-        file = open(path, encoding="utf-8").read()
-        self.history = json.loads(file)
+        with open(path, encoding="utf-8") as file:
+            self.history = json.loads(file.read())
         return True
 
 """
@@ -309,7 +310,6 @@ def index():
 # Ejemplo de uso distinto para GET y POST, no necesario estrictamente
 @app.route('/login', methods=['GET'])
 def login():
-    print(request.form)
     return render_template('login.html', user=get_session_user())
 
 # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
@@ -466,6 +466,7 @@ def checkout_pay():
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
+    # Hacer logout siempre se puede pese a no estar iniciado sesion
     session.pop('usuario', None)
     session.pop('cart', None)
     return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
