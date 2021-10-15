@@ -138,7 +138,7 @@ class User:
             data['points'] = self.points
             data['money'] = self.money
 
-            with open(path 'w', encoding='utf-8') as outfile:
+            with open(path, 'w', encoding='utf-8') as outfile:
                 json.dump(data, outfile, ensure_ascii=False, indent=4)
 
         # Actualizar history.json
@@ -309,12 +309,13 @@ def index():
 # Ejemplo de uso distinto para GET y POST, no necesario estrictamente
 @app.route('/login', methods=['GET'])
 def login():
+    print(request.form)
     return render_template('login.html', user=get_session_user())
 
+# doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
 @app.route('/login', methods=['POST'])
 def login_post():
-    # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
-    print(request.form)
+    # TODO: Mensaje de error si una sesion ya iniciada intenta hacer login
     if request.form:
         # Si se manda formulario de inicio de sesion
         user_login = User()
