@@ -366,7 +366,7 @@ body {
 
 .cart_tags{
     display:flex;
-    margin-left:300px;
+    margin-left:330px;
 }
 
 .price_tag{
@@ -374,7 +374,7 @@ body {
 }
 
 .quantity_tag{
-    margin-left: 30px;
+    margin-left: 40px;
 }
 
 .total_tag{
@@ -398,7 +398,7 @@ body {
 }
 
 .cart_product input{
-    width: 30px;
+    width: 45px;
 }
 
 .cart_product button{
@@ -413,11 +413,8 @@ body {
 }
 
 .product_dcp{
-    max-width:400px;
+    width:400px;
     margin-left:30px;
-}
-
-.product_dcp p{
 }
 
 .product_dcp span{
@@ -430,6 +427,7 @@ body {
 }
 
 .product_price{
+    width: 80px;
     margin-left: 30px;
 }
 .product_id{
