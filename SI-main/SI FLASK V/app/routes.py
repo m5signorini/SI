@@ -13,7 +13,9 @@ from hmac import compare_digest
 import re
 from datetime import datetime
 
-
+# Borrar todas las sesiones, para cuando se cambian tipos de datos
+app.secret_key = os.urandom(32)
+# Usamos el catalogo como variable global para tener acceso a las peliculas
 with open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8") as catalogue_fd:
     catalogue = json.loads(catalogue_fd.read())
 
@@ -47,8 +49,36 @@ class User:
         self.address = None
         self.payment = None
         self.points = 0
-        self.money = 0
-        self.history = {'Compras':[]}
+        self.money = 0      # En centimos para facilitar operaciones, mostrar dividiendo por cien
+
+    def validate_checkout(self, cart, form):
+        """
+        Valida el formulario de pago, comprobando dinero y puntos suficientes,
+        utilizando el carrito pasado como argumento que debe ser el de la
+        actual sesion, reescribiendo si es correcto en servidor
+        """
+        if not self.is_authenticated:
+            return False
+        if not form:
+            return False
+        if len(cart.items.keys()) < 1:
+            return False
+        points_to_use = int(form.get('points', 0))
+        if points_to_use > self.points:
+            return False
+        price_to_pay = cart.get_total_price() - points_to_use
+        if price_to_pay > self.money:
+            return False
+        # Si el pago se puede realizar:
+        self.points -= points_to_use
+        self.money -= price_to_pay
+        # Reescribimos el historial
+        history = self.get_history_from_server()
+        history['Compras'].append({'fecha':str(datetime.today()),'peliculas_compradas':cart.get_movies_in_cart(), 'precio_compra':cart.get_total_price()})
+        # Reescribimos el usuario
+        self.update_on_server()
+        self.set_history_to_server(history)
+        return True
 
     def validate_signup_form(self, form):
         """
@@ -112,42 +142,47 @@ class User:
         self.email = data['email']
         self.address = data['address']
         self.payment = data['payment']
-        self.money = random.randint(0,100)
+        self.money = random.randint(0,100)*100
         self.points = 0
         return True
 
+    def update_from_server(self):
+        """
+        Obtiene de nuevo los datos a partir de su data.dat,
+        usando self.username.
+        Solamente es necesario por ahora recargar dinero y puntos
+        """
+        path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
+        if not os.path.exists(path):
+            return False
+        with open(path, encoding="utf-8") as file:
+            data = json.loads(file.read())
+        self.money = data['money']
+        self.points = data['points']
+        return True
 
-    def update_on_server(self, *, update_data=False, update_history=False):
+    def update_on_server(self):
         """
         Usando los datos de este objeto, actualiza los valores guardados en
-        su correspondiente fichero data.dat y en history.json
+        su correspondiente fichero data.dat y en historial.json
         """
         # Comprobar validez del usuario
         if not self.is_authenticated:
             return False
-
         # Actualizar data.dat
-        if update_data:
-            path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
-            if not os.path.exists(path):
-                return False
+        path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
+        if not os.path.exists(path):
+            return False
+        # Obtiene previo y guarda
+        with open(path, encoding="utf-8") as file:
+            data = json.loads(file.read())
+        # Por ahora solo se puede modificar el dinero y los puntos
+        data['points'] = self.points
+        data['money'] = self.money
 
-            # Obtiene previo y guarda
-            with open(path, encoding="utf-8") as file:
-                data = json.loads(file.read())
-            # Por ahora solo se puede modificar el dinero y los puntos
-            data['points'] = self.points
-            data['money'] = self.money
-
-            with open(path, 'w', encoding='utf-8') as outfile:
-                json.dump(data, outfile, ensure_ascii=False, indent=4)
-
-        # Actualizar history.json
-        if update_history:
-            return self.set_history_to_server()
-
+        with open(path, 'w', encoding='utf-8') as outfile:
+            json.dump(data, outfile, ensure_ascii=False, indent=4)
         return True
-
 
     def create_on_server(self, form):
         """
@@ -155,6 +190,7 @@ class User:
         lado del servidor actualizando este objeto a su vez
         """
         if not self.validate_signup_form(form):
+            print('SIGNUP INVALIDADO')
             return False
 
         # Obtenemos salt y hasheamos
@@ -187,12 +223,10 @@ class User:
             json.dump(data, outfile, ensure_ascii=False, indent=4)
 
         # Creamos historial.json
-        self.history = {"Compras":[]}
+        history = {"Compras":[]}
         with open(path+'/historial.json', 'w', encoding='utf-8') as outfile:
-            json.dump(self.history, outfile, ensure_ascii=False, indent=4)
-
+            json.dump(history, outfile, ensure_ascii=False, indent=4)
         return True
-
 
     def get_from_server(self, form):
         """
@@ -235,42 +269,114 @@ class User:
         self.money = data['money']
         self.points = data['points']
         self.is_authenticated = True
-
-        # Actualizar obteniendo historial:
-        self.get_history_from_server()
         return True
 
-
-    def set_history_to_server(self):
+    def set_history_to_server(self, history):
         """
-        Si es un usario registrado guarda su historial en history.json
+        Si es un usario registrado guarda su historial en historial.json
         """
         if not self.is_authenticated:
             return False
 
-        path = os.path.join(app.root_path, "usuarios/"+self.username+"/history.json")
+        path = os.path.join(app.root_path, "usuarios/"+self.username+"/historial.json")
         if not os.path.exists(path):
             return False
 
         with open(path, 'w', encoding='utf-8') as outfile:
-            json.dump(self.history, outfile, ensure_ascii=False, indent=4)
+            json.dump(history, outfile, ensure_ascii=False, indent=4)
         return True
-
 
     def get_history_from_server(self):
         """
-        Si es un usuario registrado carga en self.history su historial
+        Si es un usuario registrado devuelve su historial guardado en historial.json
         """
         if not self.is_authenticated:
-            return False
+            return None
 
-        path = os.path.join(app.root_path, "usuarios/"+self.username+"/history.json")
+        path = os.path.join(app.root_path, "usuarios/"+self.username+"/historial.json")
         if not os.path.exists(path):
-            return False
+            return None
 
         with open(path, encoding="utf-8") as file:
-            self.history = json.loads(file.read())
-        return True
+            history = json.loads(file.read())
+        return history
+
+    def toJSON(self):
+        data = self.__dict__
+        return data
+
+    def loadJSON(self, data):
+        self.username = data.get('username', None)
+        self.email = data.get('email', None)
+        self.address = data.get('address', None)
+        self.payment = data.get('payment', None)
+        self.money = data.get('money', 0)
+        self.points = data.get('points', 0)
+        self.is_authenticated = data.get('is_authenticated', False)
+        return
+
+
+class Cart:
+    def __init__(self):
+        # Diccionario movie_id : cantidad
+        self.items = dict()
+
+    def add_movie_to_cart(self, movie_id):
+        if int(movie_id) >= len(catalogue['peliculas']):
+            return
+        if movie_id not in self.items:
+            self.items[movie_id] = 0
+        self.items[movie_id] += 1
+        return
+
+    def update_movie_in_cart(self, movie_id, number):
+        if int(movie_id) >= len(catalogue['peliculas']):
+            return
+        if number <= 0:
+            self.items.pop(movie_id, None)
+            return
+        if movie_id not in self.items:
+            self.items[movie_id] = 0
+        self.items[movie_id] = number
+        return
+
+    def get_movies_in_cart(self):
+        result = []
+        for movie_id, quantity in self.items.items():
+            movie = catalogue['peliculas'][int(movie_id)]
+            result.append({'pelicula':movie, 'cantidad':quantity, 'importe':quantity*movie['precio']})
+        return result
+
+    def get_total_items(self):
+        total = 0
+        for id, quantity in self.items.items():
+            total += 1
+        return total
+
+    def get_total_price(self):
+        accum = 0
+        for movie_id in self.items:
+            accum += self.get_item_price(movie_id)
+        return accum
+
+    def get_item_price(self, movie_id):
+        # El catalogo se haya indexado por id:
+        id = int(movie_id)
+        if id >= len(catalogue['peliculas']):
+            return 0
+        quantity = self.items.get(movie_id, 0)
+        price = catalogue['peliculas'][id]['precio']
+        return price*quantity
+
+    def toJSON(self):
+        data = self.__dict__
+        return data
+
+    def loadJSON(self, data):
+        self.items = data.get('items', dict())
+        return
+
+# Adicionalmente podria plantearse el uso de una clase pelicula
 
 """
 METODOS AUXILIARES
@@ -279,23 +385,14 @@ METODOS AUXILIARES
 def get_session_user():
     user = User()
     if 'usuario' in session:
-        user = session['usuario']
+        user.loadJSON(session['usuario'])
     return user
 
-
-def get_movies_in_cart_total_price():
-    movies_ids_cart = session.get('cart', [])
-    movies_in_cart = []
-    total_price = 0
-    ret = []
-    for i in movies_ids_cart:
-        aux = catalogue['peliculas'][int(i[0])]
-        movies_in_cart.append((aux,i[1],i[1]*aux["precio"]))
-        total_price += aux["precio"]*i[1]
-
-    ret.append(movies_in_cart)
-    ret.append(total_price)
-    return ret
+def get_session_cart():
+    cart = Cart()
+    if 'cart' in session:
+        cart.loadJSON(session['cart'])
+    return cart
 
 """
 FUNCIONES DE ENRUTAMIENTO
@@ -307,14 +404,9 @@ def index():
     return render_template('index.html', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user())
 
 
-# Ejemplo de uso distinto para GET y POST, no necesario estrictamente
-@app.route('/login', methods=['GET'])
-def login():
-    return render_template('login.html', user=get_session_user())
-
 # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
-@app.route('/login', methods=['POST'])
-def login_post():
+@app.route('/login', methods=['GET','POST'])
+def login():
     # TODO: Mensaje de error si una sesion ya iniciada intenta hacer login
     if request.form:
         # Si se manda formulario de inicio de sesion
@@ -322,18 +414,27 @@ def login_post():
         login_ok = user_login.get_from_server(request.form)
         if login_ok:
             # Login Correcto
-            session['usuario'] = user_login     # Settear usuario para la sesion
-            session.modified = True             # Automatico aun asi en este caso
-            return redirect(request.referrer)
+            session['usuario'] = user_login.toJSON()    # Settear usuario para la sesion
+            session.modified = True                     # Automatico aun asi en este caso
+            if 'return' in session:
+                url = session['return']
+                session.pop('return')
+                return redirect(url)
+            return redirect(url_for('index'))
         else:
             # Login Erroneo
-            return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
+            return redirect(url_for('index'))
     # Si no hay formulario
     return render_template('login.html', user=get_session_user())
 
-
-@app.route('/signup', methods=['GET', 'POST'])
+# Ejemplo de uso distinto para GET y POST, no necesario estrictamente
+@app.route('/signup', methods=['GET'])
 def signup():
+    print('SIGNUP GOTTEN')
+    return render_template('signup.html', user=get_session_user())
+
+@app.route('/signup', methods=['POST'])
+def signup_post():
     if request.form:
         # Si se manda formulario de registro
         user_signup = User()
@@ -349,53 +450,38 @@ def signup():
             return redirect(url_for('login'))
         else:
             # Registro Erroneo
+            # TODO: Aviso error de registro
             return redirect(url_for('index'))
     # Si solo se quiere la pagina
     return render_template('signup.html', user=get_session_user())
 
 
-@app.route('/cart', methods=['GET', 'POST'])
+@app.route('/cart', methods=['GET'])
 def cart():
-    aux = get_movies_in_cart_total_price()
-    return render_template('cart.html', movies_in_cart=aux[0], user=get_session_user(), total_price=aux[1])
+    cart = get_session_cart()
+    movies_data = cart.get_movies_in_cart()     # Includes prices and quantity
+    total_price = cart.get_total_price()
+    return render_template('cart.html', movies_in_cart=movies_data, user=get_session_user(), total_price=total_price)
 
 
 @app.route('/cart_update/<int:new_number>/<string:id>', methods=['GET', 'POST'])
 def cart_update(new_number,id):
-
-    for i in session['cart']:
-        if i[0] == id:
-            session['cart'].remove(i)
-            if new_number != 0:
-                session['cart'].append((id,new_number))
-            break
-
-    new_price = catalogue['peliculas'][int(id)]['precio']*new_number
-
-    print(str(new_price) + "/" + str(get_movies_in_cart_total_price()[1]))
-
-    return str(new_price) + "/" + str(get_movies_in_cart_total_price()[1])
+    cart = get_session_cart()
+    cart.update_movie_in_cart(id, new_number)
+    price = cart.get_item_price(id)
+    total = cart.get_total_price()
+    session['cart'] = cart.toJSON()
+    session.modified = True
+    return f"{price}/{total}"
 
 
-@app.route('/add_to_cart/<string:movie_id>')
+@app.route('/add_to_cart/<string:movie_id>', methods=['GET', 'POST'])
 def add_to_cart(movie_id):
-
-    if 'cart' not in session:
-        session['cart'] = []
-
-    aux = 0
-
-    for i in session['cart']:
-        if i[0] == movie_id:
-            aux = i[1]
-            session['cart'].remove(i)
-            session['cart'].append((movie_id,aux+1))
-            break
-
-    if aux == 0:
-        session['cart'].append((movie_id,1))
-
-    return redirect("/cart")
+    cart = get_session_cart()
+    cart.add_movie_to_cart(movie_id)
+    session['cart'] = cart.toJSON()
+    session.modified = True
+    return redirect('/cart')
 
 
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])
@@ -403,65 +489,52 @@ def movie_page(id):
     return render_template('movie_page.html', user=get_session_user(),movie=catalogue['peliculas'][id])
 
 
-@app.route('/history',methods=['GET', 'POST'])
+@app.route('/history',methods=['GET'])
 def history():
     user = get_session_user()
     if user.is_authenticated:
-        history = user.history
+        history = user.get_history_from_server()        # Obtiene historial del servidor
         return render_template('history.html', user=user, history=history['Compras'])
     else:
         abort(401)      # Acceso denegado si no esta iniciado sesion
 
 
-@app.route('/checkout',methods=['GET', 'POST'])
+@app.route('/checkout',methods=['GET'])
 def checkout():
     user = get_session_user()
+    cart = get_session_cart()
     if user.is_authenticated:
-        aux = get_movies_in_cart_total_price()
-        return render_template('checkout.html', user=get_session_user(), num_products=len(aux[0]), total_price=aux[1], user_money = user['saldo'], user_points = user['puntos'])
+        #aux = get_movies_in_cart_total_price()
+        num_products = cart.get_total_items()
+        total_price = cart.get_total_price()
+        return render_template('checkout.html', user=get_session_user(), num_products=num_products, total_price=total_price)
     else:
         # TODO: Añadir mensaje de aviso de inicio de sesion necesario
+        session['return'] = url_for('checkout')
         return redirect(url_for('login'))
 
 
-@app.route('/checkout_pay',methods=['GET', 'POST'])
+@app.route('/checkout_pay',methods=['POST'])
 def checkout_pay():
-    logged_user = get_session_user()
-    price = get_movies_in_cart_total_price()
-    path = os.path.join(app.root_path,"usuarios/"+logged_user['username'] + "/data.dat")
-    user_data = open(path, encoding="utf-8").read()
-    user = json.loads(user_data)
-    if user['saldo'] < price[1] or user['puntos'] < int(request.form['points']):
-        return redirect(url_for('checkout',user=get_session_user()))
+    if not request.form:
+        return redirect(url_for('index'))
+    user = get_session_user()
+    cart = get_session_cart()
+    if not user.is_authenticated:
+        # TODO: Acceso restringido
+        return abort(401)
+    # Actualizamos usuario desde el servidor por si se ha realizado algun cambio
+    user.update_from_server()
+    # Comprobamos formulario enviado es valido
+    if not user.validate_checkout(cart, request.form):
+        # TODO: Mensaje de error pago erroneo
+        return redirect(url_for('checkout'))
     else:
-        user['puntos'] = user['puntos'] - int(request.form['points'])
-        user['saldo'] = user['saldo'] - price[1] + (int(request.form['points'])/100)
-
-        user['saldo'] = user['saldo'] - price[1]
-
-        #Poblamos el JSON del historial
-        path = os.path.join(app.root_path,"usuarios/"+logged_user['username'] + "/historial.json")
-        history_data = open(path, encoding="utf-8").read()
-        history = json.loads(history_data)
-
-        purchase_date = datetime.today()
-        aux = get_movies_in_cart_total_price()
-        aux2 = aux[0]
-        movies_purchased = []
-        for i in aux2:
-            movies_purchased.append((i[0]['titulo'],i[1]))
-        total_purchase_price  = aux [1]
-
-        history['Compras'].append({"fecha":str(datetime.today()),"peliculas_compradas":movies_purchased, "precio_compra":total_purchase_price})
-
-        with open(path, 'w') as outfile:
-            json.dump(history, outfile)
-
-        session.pop('cart', None)
-        logged_user = get_session_user()
-        with open(os.path.join(app.root_path,'usuarios/'+logged_user['username']+'/data.dat'), 'w') as outfile:
-            json.dump(user, outfile)
-        return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
+        # Si lo era se habra realizado la transaccion
+        session.pop('cart')
+        session['usuario'] = user.toJSON()
+        session.modified = True
+        return redirect(url_for('index'))
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -469,7 +542,7 @@ def logout():
     # Hacer logout siempre se puede pese a no estar iniciado sesion
     session.pop('usuario', None)
     session.pop('cart', None)
-    return redirect(url_for('index', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user()))
+    return redirect(url_for('index'))
 
 #@app.route('/user/<string:user>/history')
 
@@ -499,6 +572,16 @@ Invocadas mediante el metodo abort, e.g: abort(401)
 """
 @app.errorhandler(401)
 def no_access(error):
-    mensaje = jsonify({'message':'Failed'})
+    mensaje = jsonify({'message':'Acceso denegado'})
     # TODO: Usar template de error
     return mensaje, 401
+
+def existing_user():
+    mensaje = jsonify({'message':'Usuario ya existente'})
+    # TODO: Usar template de error
+    return mensaje, 409
+
+def login_error():
+    mensaje = jsonify({'message':'Credenciales no validas'})
+    # TODO: Usar template de error
+    return mensaje, 400

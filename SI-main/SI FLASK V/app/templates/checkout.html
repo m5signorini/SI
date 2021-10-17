@@ -18,17 +18,17 @@
                 </div>
                 <div class="checkout_price">
                     <span>Importe Total:</span>
-                    <span>{{ total_price }}</span>
+                    <span>{{ total_price/100 }}</span>
                 </div>
                 <div class="checkout_user">
                     <span>Saldo Actual:</span>
-                    <span>{{ user_money }}</span>
+                    <span>{{ user.money/100 }}</span>
                 </div>
             </div>
 
             <div class="checkout_points_part">
                 <input id="points" name="points" type="number" min="0" step="100" value="0" required>
-                <div><span id="points_balance">Te quedan {{user_points}} puntos</span></div>
+                <div><span id="points_balance">Te quedan {{user.points}} puntos</span></div>
                 <p>Cada 100 puntos equivalen a 1$</p>
             </div>
         </div>

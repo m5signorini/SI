@@ -11,11 +11,16 @@
             <th>Fecha de Compra</th>
             <th>Importe</th>
         </tr>
-        {% for item in history %}
+        {% for compra in history %}
         <tr class="history_product">
-            <th>{{item.peliculas_compradas}}</th>
-            <th>{{item.fecha}}</th>
-            <th>{{item.precio_compra}}</th>
+            <th>
+                {% for item in compra.peliculas_compradas %}
+                {{ item['pelicula'].titulo }} x {{ item['cantidad'] }} ({{ item['importe']/100 }})
+                <br>
+                {% endfor %}
+            </th>
+            <th>{{ compra.fecha }}</th>
+            <th>{{ compra.precio_compra/100 }}</th>
         </tr>
         {% endfor %}
     </div>

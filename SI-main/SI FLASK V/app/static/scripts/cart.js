@@ -12,9 +12,9 @@ function update_number() {
         url: '/cart_update/' + $(this).val() + '/' + $(this).parent().parent().children('.product_id').text(),
         type: 'GET',
         success: function(response){
-            aux=(response.split("/"));
-            $(updated).parent().parent().children('.products_total_price').text(aux[0] + " $");
-            $('.total_price_calculation').text(aux[1] + " $");
+            aux=response.split("/");
+            $(updated).parent().parent().children('.products_total_price').text(parseInt(aux[0])/100 + " $");
+            $('.total_price_calculation').text(parseInt(aux[1])/100 + " $");
         },
         error: function(data) {
             console.log('Error al obtener numero de puntos');
@@ -28,8 +28,8 @@ function remove_item(){
         url: '/cart_update/0/' + $(this).parent().children('.product_id').text(),
         type: 'GET',
         success: function(response){
-            aux=(response.split("/"))
-            $('.total_price_calculation').text(aux[1] + " $");
+            aux=response.split("/");
+            $('.total_price_calculation').text(parseInt(aux[1]) + " $");
         },
         error: function(data) {
             console.log('Error al obtener numero de puntos');

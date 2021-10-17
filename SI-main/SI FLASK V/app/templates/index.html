@@ -28,7 +28,7 @@
         <div class="movie_quickdata">
             <span class="director">{{ item.director }}</span>
             <span class="category">{{ item.categoria }}</span>
-            <span class="price">{{ item.precio }}</span>
+            <span class="price">{{ item.precio/100 }}</span>
         </div>
         <div class="movie_poster">
             <a href="{{ url_for('movie_page', id=item.id) }}">

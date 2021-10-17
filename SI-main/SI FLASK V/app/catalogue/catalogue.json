@@ -5,7 +5,7 @@
          "titulo":"La guerra de las galaxias: Episodio 1-La amenaza fantasma",
          "poster":"../static/img/sample2.jpg",
          "director":"George Lucas",
-         "precio":18.99,
+         "precio":1899,
          "categoria":[
             "Aventura",
             "Fantasia",
@@ -33,7 +33,7 @@
          "titulo":"Mad Max",
          "poster":"../static/img/sample1.jpg",
          "director":"George Miller",
-         "precio":14.99,
+         "precio":1499,
          "categoria":[
             "Accion",
             "Aventura",
