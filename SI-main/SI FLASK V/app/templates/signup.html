@@ -29,7 +29,11 @@
                 <input type="text" id="payment" placeholder="Tarjeta de crédito" name="payment" required>
             </div>
         </div>
-        <span class="strength" id="submit_result"></span>
+        <span class="strength" id="submit_result">
+            {% if error %}
+            {{ error }}
+            {% endif %}
+        </span>
         <button type="submit">Registrarse</button>
     </form>
     <p>Al pulsar Registrarse acepta nuestros términos y condiciones</p>

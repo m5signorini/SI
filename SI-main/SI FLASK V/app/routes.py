@@ -190,7 +190,6 @@ class User:
         lado del servidor actualizando este objeto a su vez
         """
         if not self.validate_signup_form(form):
-            print('SIGNUP INVALIDADO')
             return False
 
         # Obtenemos salt y hasheamos
@@ -430,7 +429,6 @@ def login():
 # Ejemplo de uso distinto para GET y POST, no necesario estrictamente
 @app.route('/signup', methods=['GET'])
 def signup():
-    print('SIGNUP GOTTEN')
     return render_template('signup.html', user=get_session_user())
 
 @app.route('/signup', methods=['POST'])
@@ -442,7 +440,8 @@ def signup_post():
             signup_ok = user_signup.create_on_server(request.form)
         except ExistingUserException:
             # TODO: Aviso de usuario ya existente
-            return redirect(url_for('index'))
+            error = "El usuario introducido ya estaba registrado"
+            return render_template('signup.html', user=get_session_user(), error=error)
 
         # Si no ocurre ExistingUserException:
         if signup_ok:
@@ -493,7 +492,7 @@ def movie_page(id):
 def history():
     user = get_session_user()
     if user.is_authenticated:
-        history = user.get_history_from_server()        # Obtiene historial del servidor
+        history = user.get_history_from_server()
         return render_template('history.html', user=user, history=history['Compras'])
     else:
         abort(401)      # Acceso denegado si no esta iniciado sesion
