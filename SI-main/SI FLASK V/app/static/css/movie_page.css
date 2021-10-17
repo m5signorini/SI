@@ -1,0 +1,98 @@
+/***Movie Page***/
+
+.movie_container{
+    margin-left: 5em;
+    margin-top: 5em;
+    padding-right: 30em;
+}
+
+.movie_content{
+    background-color: white;
+    display:flex;
+    flex-direction:column;
+    overflow-y: auto;
+    margin: 20px 0px 10px 150px;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.top_part{
+    display:flex;
+    width:100%;
+}
+
+.image_movie{
+    margin: 4px;
+    margin-right: 15px;
+}
+.image_movie img{
+    height:292px;
+    width:200px;
+}
+
+.movie_extra{
+    display:flex;
+    flex-direction:row;
+    margin-bottom: 10px;
+}
+
+.movie_info{
+    display:flex;
+    flex-direction:column;
+    margin-top:25px;
+}
+.movie_info_ span{
+    font-size:14px;
+    color: grey;
+    text-align: center;
+}
+
+.movie_info_ a{
+    text-align: center;
+    color: green;
+    text-decoration: none;
+}
+
+.purchase{
+    text-align: right;
+}
+
+.purchase_button{
+    font-size: 25px;
+    background-color: #04AA6D;
+    color:white;
+    border: none;
+    border-radius:2px;
+    margin-right: 40px;
+    cursor: pointer;
+}
+
+.bottom_part{
+    text-align: center;
+    display: flex;
+    flex-direction:column;
+}
+
+.movie_description{
+    font-size: 14px;
+    color: grey;
+    line-height:25px;
+    margin-top: 10px;
+}
+
+.text.show-more .more_text{
+    display: block;
+}
+
+.more_text{
+    display: none;
+}
+
+.see_more{
+    font-size:25px;
+    color:green;
+    cursor: pointer;
+    background-color:white;
+    border-style:none;
+}

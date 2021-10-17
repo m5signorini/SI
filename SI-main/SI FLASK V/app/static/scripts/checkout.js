@@ -14,7 +14,6 @@ function points_input() {
         },
         error: function(data) {
             console.log('Error al obtener numero de puntos');
-            clearInterval(interv);
         }
     });
 }

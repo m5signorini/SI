@@ -2,6 +2,10 @@
 
 {% block title %}Historial{% endblock %}
 
+{% block head_css %}
+<link rel="stylesheet" href="../static/css/history.css">
+{% endblock %}
+
 {% block content %}
 <div class="history_content">
     <h1>HISTORIAL DE COMPRAS</h1>
@@ -23,6 +27,6 @@
             <th>{{ compra.precio_compra/100 }} $</th>
         </tr>
         {% endfor %}
-    </div>
+    </table>
 </div>
 {% endblock %}

@@ -67,11 +67,15 @@ class User:
         if points_to_use > self.points:
             return False
         price_to_pay = cart.get_total_price() - points_to_use
+        if price_to_pay < 0:
+            # Se ha intentado usar demasiados puntos
+            return False
         if price_to_pay > self.money:
             return False
         # Si el pago se puede realizar:
         self.points -= points_to_use
         self.money -= price_to_pay
+        self.points += int(price_to_pay * 0.05)
         # Reescribimos el historial
         history = self.get_history_from_server()
         history['Compras'].append({'fecha':str(datetime.today()),'peliculas_compradas':cart.get_movies_in_cart(), 'precio_compra':cart.get_total_price()})
@@ -524,6 +528,8 @@ def checkout_pay():
         return abort(401)
     # Actualizamos usuario desde el servidor por si se ha realizado algun cambio
     user.update_from_server()
+    session['usuario'] = user.toJSON()
+    session.modified = True
     # Comprobamos formulario enviado es valido
     if not user.validate_checkout(cart, request.form):
         # TODO: Mensaje de error pago erroneo
@@ -543,6 +549,36 @@ def logout():
     session.pop('cart', None)
     return redirect(url_for('index'))
 
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    user = get_session_user()
+    if not user.is_authenticated:
+        abort(401)
+    user.update_from_server()
+    session['usuario'] = user.toJSON()
+    session.modified = True
+    return render_template('profile.html', user=user)
+
+
+@app.route('/profile_add_money', methods=['POST'])
+def profile_add_money():
+    user = get_session_user()
+    if not user.is_authenticated:
+        abort(401)
+    if request.form:
+        added_money = int(request.form.get('add_money', 0))
+        if added_money < 0:
+            added_money = 0
+        user.update_from_server()
+        user.money += added_money
+        user.update_on_server()
+        session['usuario'] = user.toJSON()
+        session.modified = True
+        return redirect(url_for('profile'))
+    else:
+        abort(401)
+
 #@app.route('/user/<string:user>/history')
 
 # Ruta para numero visitas
@@ -551,18 +587,18 @@ def num_visitors():
     n = random.randint(0,100)
     return str(n)
 
-# Ruta para numero de puntos
+# Ruta para restar numero de puntos
 @app.route('/num_points/<int:change>', methods=['GET', 'POST'])
 def num_points(change):
-    logged_user = get_session_user()
-    path = os.path.join(app.root_path,"usuarios/"+logged_user['username'] + "/data.dat")
-    user_data = open(path, encoding="utf-8").read()
-    user = json.loads(user_data)
-    balance = user['puntos']-change
+    user = get_session_user()
+    user.update_from_server()
+    session['usuario'] = user.toJSON()
+    session.modified = True
+    balance = user.points - change
     if balance < 0:
         return "No tienes puntos suficientes"
     else:
-        return "Te quedan " + str(balance) + " puntos"
+        return "Te quedarían " + str(balance) + " puntos"
 
 
 """

@@ -3,7 +3,7 @@
 {% block title %} Indice {% endblock %}
 
 {% block head_scripts %}
-<script type="text/javascript" src="../static/scripts/index.js"></script>
+<script src="../static/scripts/index.js"></script>
 {% endblock %}
 
 {% block content%}
@@ -14,7 +14,7 @@
     <div class="filterbox">
         {% for item in categories %}
         <div class="filter">
-            <input type="checkbox" name="cat1" value="{{item}}" ><label for="cat1">{{item}}</label>
+            <input type="checkbox" id="cat{{loop.index}}" name="category" value="{{item}}" ><label for="cat{{loop.index}}">{{item}}</label>
         </div>
         {% endfor %}
     </div>
@@ -40,7 +40,9 @@
         </div>
         <div class="movie_footer">
             <div class="movie_add_to_cart">
-                <a href="{{ url_for('add_to_cart', movie_id=item.id) }}"><button type="button" name="add_to_cart">Añadir a la carta</button></a>
+                <form action="{{ url_for('add_to_cart', movie_id=item.id) }}" method="post">
+                    <button type="submit">Añadir a la carta</button>
+                </form>
             </div>
         </div>
     </div>

@@ -1,0 +1,34 @@
+/***Login Window***/
+
+.login_content{
+    background-color: white;
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.login_content button{
+    background-color:#04AA6D;
+    color: white;
+    opacity: 0.9;
+    width: 75%;
+    height: 75px;
+    margin: 25px 50px;
+    font-size: 20px;
+}
+
+.login_content .create_account{
+    display:inline-block;
+}
+
+.login_content .create_account h2{
+    color: grey;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.login_content .create_account a{
+    color: green;
+    text-decoration:none;
+}

@@ -1,0 +1,66 @@
+
+/***Signup***/
+
+.signup_content{
+    background-color: white;
+    display:grid;
+    text-align: center;
+    justify-items:center;
+}
+
+.inputs_left{
+    display: flex;
+    flex-direction: column;
+}
+
+.inputs_left div{
+    display: flex;
+    flex-direction: column;
+}
+.strength {
+    font-size: 10px;
+    margin-bottom: 15px;
+}
+
+.inputs_right{
+    display: flex;
+    flex-direction:column;
+}
+
+.signup_content button{
+    background-color:#04AA6D;
+    color: white;
+    opacity: 0.9;
+    border-color: none;
+    width: 100px;
+    cursor: pointer;
+}
+
+.signup_content p{
+    color:grey;
+    opacity:50%;
+}
+
+#signusername{
+    background-image:url("../img/user.png");
+}
+
+#email{
+    background-image:url("../img/email.png");
+}
+
+#signpassword{
+    background-image:url("../img/password.png");
+}
+
+#confsignpassword{
+    background-image:url("../img/confirmation.png");
+}
+
+#address{
+    background-image:url("../img/address.png");
+}
+
+#payment{
+    background-image:url("../img/credit-card.png");
+}

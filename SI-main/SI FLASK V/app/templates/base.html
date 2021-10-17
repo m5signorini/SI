@@ -4,8 +4,9 @@
         <meta charset="utf-8">
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="../static/css/master.css">
-        <script type="text/javascript" src="../static/scripts/jquery-3.6.0.js"></script>
-        <script type="text/javascript" src="../static/scripts/visitors.js"></script>
+        {% block head_css %}{% endblock %}
+        <script src="../static/scripts/jquery-3.6.0.js"></script>
+        <script src="../static/scripts/visitors.js"></script>
         {% block head_scripts %}{% endblock %}
     </head>
 
@@ -21,7 +22,7 @@
             <div class="login_container_index">
                 <img class="user_icon" src="../static/img/user.png" alt="">
                 {% if user.is_authenticated %}
-                <a href="{{ url_for('index') }}">Mi cuenta</a>
+                <a href="{{ url_for('profile') }}">Mi cuenta</a>
                 <a href="{{ url_for('logout') }}">Cerrar sesión</a>
                 {% else %}
                 <a href="{{ url_for('login') }}">Iniciar sesión</a>
@@ -42,10 +43,11 @@
         <div class="side_menu">
             <div class="side_links">
                 <ul>
-                    <li><a href="{{ url_for('index') }}">Catalogue</a></li>
+                    <li><a href="{{ url_for('index') }}">Catálogo</a></li>
                     <li><a href="{{ url_for('cart') }}">Carrito</a></li>
                     {% if user.is_authenticated %}
                     <li><a href="{{ url_for('history') }}">Historial</a></li>
+                    <li><a href="{{ url_for('profile') }}">Mi cuenta</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -53,6 +55,6 @@
         <!-- CONTENT -->
         <div class="content">
             {% block content %}{% endblock %}
-        </body>
-
+        </div>
+    </body>
 </html>

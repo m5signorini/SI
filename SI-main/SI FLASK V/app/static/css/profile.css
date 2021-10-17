@@ -1,0 +1,21 @@
+/*** PERFIL ***/
+
+.profile_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile_details {
+    color: green;
+}
+
+.profile_form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+}
+
+.profile_form * {
+    margin-top: 10px;
+}

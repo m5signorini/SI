@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}Historial{% endblock %}
+
+{% block head_css %}
+<link rel="stylesheet" href="../static/css/checkout.css">
+{% endblock %}
 {% block head_scripts %}
-<script type="text/javascript" src="../static/scripts/checkout.js"></script>
+<script src="../static/scripts/checkout.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -27,7 +31,7 @@
             </div>
 
             <div class="checkout_points_part">
-                <input id="points" name="points" type="number" min="0" step="100" value="0" required>
+                <input id="points" name="points" type="number" min="0" step="100" max={{user.points}} value="0" required>
                 <div><span id="points_balance">Te quedan {{user.points}} puntos</span></div>
                 <p>Cada 100 puntos equivalen a 1$</p>
             </div>

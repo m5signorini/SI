@@ -1,0 +1,32 @@
+/*** HISTORIAL DE COMPRA ***/
+
+.history_content{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.history_products {
+  padding-bottom: 5em;
+  margin-top: 30px;
+}
+
+.history_products th:nth-child(1) {
+  width: 30%;
+}
+
+.history_products th:nth-child(2) {
+  width: 20%;
+}
+
+.history_products th:nth-child(3) {
+  width: 15%;
+}
+
+.history_products th:nth-child(4) {
+  width: 35%;
+}
+
+th, td {
+  padding: 20px;
+}

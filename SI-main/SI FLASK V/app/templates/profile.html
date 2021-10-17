@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Mi cuenta{% endblock %}
+
+{% block head_css %}
+<link rel="stylesheet" href="../static/css/profile.css">
+{% endblock %}
+
+{% block content %}
+<div class="profile_content">
+    <h1>Detalles de la cuenta</h1>
+    <div class="profile_details">
+        <p>Nombre de usuario: {{ user.username }}</p>
+        <p>Dirección email: {{ user.email }}</p>
+        <p>Dirección: {{ user.address }}</p>
+        <p>Tarjeta: {{ user.payment }}</p>
+        <p>Puntos: {{ user.points }}</p>
+        <p>Saldo: {{ user.money/100 }} $</p>
+    </div>
+    <form class="profile_form" action="/profile_add_money" method="post">
+        <label for="add_money">Saldo a incrementar (centimos) : </label>
+        <input type="number" id="add_money" name="add_money" value="0" required>
+        <button type="submit">Añadir cantidad al saldo</button>
+    </form>
+</div>
+{% endblock %}
