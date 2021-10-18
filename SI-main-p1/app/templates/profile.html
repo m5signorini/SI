@@ -17,7 +17,7 @@
         <p>Puntos: {{ user.points }}</p>
         <p>Saldo: {{ user.money/100 }} $</p>
     </div>
-    <form class="profile_form" action="/profile_add_money" method="post">
+    <form class="profile_form" action="profile_add_money" method="post">
         <label for="add_money">Saldo a incrementar (centimos) : </label>
         <input type="number" id="add_money" name="add_money" value="0" required>
         <button type="submit">Añadir cantidad al saldo</button>

@@ -9,7 +9,7 @@ function init() {
 function update_number() {
     let updated = this;
     $.ajax({
-        url: '/cart_update/' + $(this).val() + '/' + $(this).parent().parent().children('.product_id').text(),
+        url: 'cart_update/' + $(this).val() + '/' + $(this).parent().parent().children('.product_id').text(),
         type: 'POST',
         success: function(response){
             aux=response.split("/");
@@ -24,7 +24,7 @@ function update_number() {
 
 function remove_item(){
     $.ajax({
-        url: '/cart_update/0/' + $(this).parent().children('.product_id').text(),
+        url: 'cart_update/0/' + $(this).parent().children('.product_id').text(),
         type: 'POST',
         success: function(response){
             aux=response.split("/");

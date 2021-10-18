@@ -7,7 +7,7 @@ function init() {
 
 function points_input() {
     $.ajax({
-        url: '/num_points/' + $('#points').val(),
+        url: 'num_points/' + $('#points').val(),
         type: 'GET',
         success: function(response){
             $('#points_balance').text(response);
