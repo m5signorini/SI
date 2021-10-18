@@ -3,17 +3,17 @@
 {% block title %}Pelicula{% endblock %}
 
 {% block head_css %}
-<link rel="stylesheet" href="../static/css/movie_page.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/movie_page.css') }}">
 {% endblock %}
 {% block head_scripts %}
-<script src="../static/scripts/movie_page.js"></script>
+<script src="{{ url_for('static', filename='scripts/movie_page.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="movie_content">
     <div class="top_part">
             <div class="image_movie">
-                <img src="{{movie.poster}}" alt="">
+                <img src="{{ url_for('static', filename=movie.poster) }}" alt="">
             </div>
             <div class="movie_info">
                 <h1>{{movie.titulo}}</h1>

@@ -3,7 +3,7 @@
 {% block title %} Indice {% endblock %}
 
 {% block head_scripts %}
-<script src="../static/scripts/index.js"></script>
+<script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 {% endblock %}
 
 {% block content%}
@@ -32,7 +32,7 @@
         </div>
         <div class="movie_poster">
             <a href="{{ url_for('movie_page', id=item.id) }}">
-                <img src={{item.poster}} alt="">
+                <img src="{{ url_for('static', filename=item.poster) }}"alt="">
             </a>
         </div>
         <div class="movie_synopsis">

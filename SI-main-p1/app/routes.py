@@ -484,7 +484,7 @@ def add_to_cart(movie_id):
     cart.add_movie_to_cart(movie_id)
     session['cart'] = cart.toJSON()
     session.modified = True
-    return redirect('/cart')
+    return redirect(url_for('cart'))
 
 
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])

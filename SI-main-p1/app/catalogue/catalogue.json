@@ -3,7 +3,7 @@
       {
          "id":0,
          "titulo":"La guerra de las galaxias: Episodio 1-La amenaza fantasma",
-         "poster":"../static/img/sample2.jpg",
+         "poster":"img/sample2.jpg",
          "director":"George Lucas",
          "precio":1899,
          "categoria":[
@@ -31,7 +31,7 @@
       {
          "id":1,
          "titulo":"Mad Max",
-         "poster":"../static/img/sample1.jpg",
+         "poster":"img/sample1.jpg",
          "director":"George Miller",
          "precio":1499,
          "categoria":[
@@ -59,7 +59,7 @@
       {
          "id":2,
          "titulo":"Frogs",
-         "poster":"../static/img/sample3.jpeg",
+         "poster":"img/sample3.jpeg",
          "director":"George McCowan",
          "precio":2,
          "categoria":[

@@ -3,10 +3,10 @@
 {% block title %}Registrarse{% endblock %}
 
 {% block head_css %}
-<link rel="stylesheet" href="../static/css/signup.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
 {% endblock %}
 {% block head_scripts %}
-<script src="../static/scripts/signup.js"></script>
+<script src="{{ url_for('static', filename='scripts/signup.js') }}"></script>
 {% endblock %}
 
 {% block content %}

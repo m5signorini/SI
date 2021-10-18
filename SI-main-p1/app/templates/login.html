@@ -3,7 +3,7 @@
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block head_css %}
-<link rel="stylesheet" href="../static/css/login.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
 
 {% block content %}

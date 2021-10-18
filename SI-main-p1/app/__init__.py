@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 # ejemplo de sesion Flask: http://flask.pocoo.org/docs/1.0/quickstart/#sessions
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.static_folder = "static"
 
 try:
     from flask_session import Session

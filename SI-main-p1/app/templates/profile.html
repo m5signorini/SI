@@ -3,7 +3,7 @@
 {% block title %}Mi cuenta{% endblock %}
 
 {% block head_css %}
-<link rel="stylesheet" href="../static/css/profile.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 {% endblock %}
 
 {% block content %}

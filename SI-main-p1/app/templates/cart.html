@@ -3,10 +3,10 @@
 {% block title %}Carrito{% endblock %}
 
 {% block head_css %}
-<link rel="stylesheet" href="../static/css/cart.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
 {% endblock %}
 {% block head_scripts %}
-<script src="../static/scripts/cart.js"></script>
+<script src="{{ url_for('static', filename='scripts/cart.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@
         </div>
         {% for item in movies_in_cart %}
         <div class="cart_product">
-            <img class="product_image" src={{item.pelicula.poster}} alt="">
+            <img class="product_image" src="{{ url_for('static', filename=item.pelicula.poster) }}" alt="">
             <div class="product_dcp">
                 <p>{{ item['pelicula'].titulo }}</p>
                 <span>{{ item['pelicula'].descripcion }}</span>

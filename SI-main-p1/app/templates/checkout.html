@@ -3,10 +3,10 @@
 {% block title %}Historial{% endblock %}
 
 {% block head_css %}
-<link rel="stylesheet" href="../static/css/checkout.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
 {% endblock %}
 {% block head_scripts %}
-<script src="../static/scripts/checkout.js"></script>
+<script src="{{ url_for('static', filename='scripts/checkout.js') }}"></script>
 {% endblock %}
 
 {% block content %}
