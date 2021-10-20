@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block head_css %}
+<link rel="stylesheet" href="../static/css/login.css">
+{% endblock %}
+
+{% block content %}
+<div class="login_content">
+    <h1>BIENVENIDO DE NUEVO</h1>
+    <form class="user_form" method="post">
+        {% if last_user %}
+        <input type="text" placeholder="Nombre de usuario" name="username" value={{last_user}} required>
+        {% else %}
+        <input type="text" placeholder="Nombre de usuario" name="username" required>
+        {% endif %}
+        <input type="password" placeholder="Contraseña" name="password" required>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    <div class="create_account">
+        <h2>¿No estás registrado?</h2>
+        <a href="{{ url_for('signup') }}">Crea una cuenta</a>
+    </div>
+</div>
+{% endblock %}
