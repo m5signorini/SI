@@ -418,6 +418,7 @@ def login():
         if login_ok:
             # Login Correcto
             session['usuario'] = user_login.toJSON()    # Settear usuario para la sesion
+            session['last_user'] = user_login.username
             session.modified = True                     # Automatico aun asi en este caso
             if 'return' in session:
                 url = session['return']
@@ -428,7 +429,8 @@ def login():
             # Login Erroneo
             return redirect(url_for('index'))
     # Si no hay formulario
-    return render_template('login.html', user=get_session_user())
+    last_user = session.get('last_user', None)
+    return render_template('login.html', user=get_session_user(), last_user=last_user)
 
 # Ejemplo de uso distinto para GET y POST, no necesario estrictamente
 @app.route('/signup', methods=['GET'])
@@ -484,7 +486,7 @@ def add_to_cart(movie_id):
     cart.add_movie_to_cart(movie_id)
     session['cart'] = cart.toJSON()
     session.modified = True
-    return redirect(url_for('cart'))
+    return redirect('/cart')
 
 
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])
