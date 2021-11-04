@@ -3,3 +3,4 @@ __pycache__/
 usuarios/*/
 thesessions/
 .DS_Store
+.exe
