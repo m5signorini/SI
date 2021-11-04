@@ -1,14 +1,15 @@
 
 -- ELIMINAR DUPLICADOS DE ORDERDETAIL AGRUPANDO CANTIDADES
+-- Notese que orderdetail comienza desconexa.
 SELECT DISTINCT orderid, prod_id, AVG(price) AS price, SUM(quantity) AS quantity
 INTO duplicates_orderdetail
 FROM orderdetail
     GROUP BY (orderid, prod_id)
     HAVING COUNT((orderid, prod_id)) > 1;
 
-DELETE FROM orderdetail
-    WHERE (orderid, prod_id)
-    IN (SELECT orderid, prod_id FROM duplicates_orderdetail);
+DELETE FROM orderdetail AS od
+    USING duplicates_orderdetail AS dp
+    WHERE od.orderid = dp.orderid AND od.prod_id = dp.prod_id;
 
 INSERT INTO orderdetail
 SELECT *
