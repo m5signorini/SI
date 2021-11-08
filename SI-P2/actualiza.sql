@@ -37,6 +37,23 @@ ALTER TABLE imdb_actormovies ADD CONSTRAINT PK_actormovies PRIMARY KEY (actorid,
 ALTER TABLE customers ADD balance BIGINT NOT NULL DEFAULT '0';
 ALTER TABLE customers ADD loyalty INT NOT NULL DEFAULT '0';
 
+-- MODIFICAR year TO SMALLINT
+-- USAMOS start_year Y end_year EN FUNCION DE YEAR
+ALTER TABLE imdb_movies ADD start_year SMALLINT;
+ALTER TABLE imdb_movies ADD end_year SMALLINT;
+
+-- SI FORMATO = <year>-<year> SEPARAMOS, SI NO, IGUALES
+UPDATE imdb_movies AS im
+    SET start_year = split_part(im.year, '-', 1)::SMALLINT,
+        end_year = 
+            CASE 
+                WHEN position('-' in im.year) > 0 THEN split_part(im.year, '-', 2)::SMALLINT
+                ELSE im.year::SMALLINT
+            END
+	WHERE start_year IS NULL AND end_year IS NULL;
+-- ELIMINAR COLUMNA INNECESARIA year
+--ALTER TABLE imdb_movies DROP COLUMN year;
+
 -- ALERTS
 CREATE TABLE alerts (
     empty_date TIMESTAMP,
