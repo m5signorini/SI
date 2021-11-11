@@ -9,9 +9,10 @@ CREATE OR REPLACE FUNCTION getTopActors (genre CHAR, OUT Actor CHAR, OUT Num INT
             WITH all_data AS (
             SELECT imdb_actors.actorname, imdb_movies.movietitle, imdb_movies.start_year,
                 imdb_actors.actorid, imdb_movies.movieid
-            FROM imdb_moviegenres
-                JOIN imdb_movies ON imdb_moviegenres.movieid = imdb_movies.movieid 
-                    AND imdb_moviegenres.genre = $1 
+            FROM imdb_genres
+                JOIN imdb_genremovies ON imdb_genremovies.genreid = imdb_genres.genreid
+                JOIN imdb_movies ON imdb_genremovies.movieid = imdb_movies.movieid 
+                    AND imdb_genres.genre = $1 
                 JOIN imdb_actormovies ON imdb_movies.movieid = imdb_actormovies.movieid
                 JOIN imdb_actors ON imdb_actors.actorid = imdb_actormovies.actorid
             ),

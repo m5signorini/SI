@@ -76,6 +76,85 @@ CREATE OR REPLACE PROCEDURE setCustomersBalance (IN maxBalance bigint)
 CALL setCustomersBalance(100);
 
 
+-- IMDB_GENRES, IMDB_LANGUAGES, IMDB_COUNTRIES
+CREATE TABLE imdb_genres (
+    genreid SERIAL NOT NULL PRIMARY KEY,
+    genre VARCHAR(32) NOT NULL UNIQUE
+);
+CREATE TABLE imdb_languages (
+    languageid SERIAL NOT NULL PRIMARY KEY,
+    language VARCHAR(32) NOT NULL UNIQUE
+);
+CREATE TABLE imdb_countries (
+    countryid SERIAL NOT NULL PRIMARY KEY,
+    country VARCHAR(32) NOT NULL UNIQUE
+);
+
+-- POPULATE NEW TABLES
+INSERT INTO imdb_genres (genre)
+SELECT DISTINCT genre
+FROM imdb_moviegenres;
+
+INSERT INTO imdb_languages (language)
+SELECT DISTINCT language
+FROM imdb_movielanguages;
+
+INSERT INTO imdb_countries (country)
+SELECT DISTINCT country
+FROM imdb_moviecountries;
+
+-- CREATE NEW RELATION TABLES TO SUBSTITUTE ATTRIBUTE TABLES
+CREATE TABLE imdb_genremovies (
+    movieid INTEGER,
+    genreid INTEGER,
+    PRIMARY KEY (movieid, genreid),
+    FOREIGN KEY (movieid)
+        REFERENCES imdb_movies (movieid)
+        ON DELETE CASCADE,
+    FOREIGN KEY (genreid)
+        REFERENCES imdb_genres (genreid)
+        ON DELETE CASCADE
+);
+CREATE TABLE imdb_languagemovies (
+    movieid INTEGER,
+    languageid INTEGER,
+    PRIMARY KEY (movieid, languageid),
+    FOREIGN KEY (movieid)
+        REFERENCES imdb_movies (movieid)
+        ON DELETE CASCADE,
+    FOREIGN KEY (languageid)
+        REFERENCES imdb_languages (languageid)
+        ON DELETE CASCADE
+);
+CREATE TABLE imdb_countrymovies (
+    movieid INTEGER,
+    countryid INTEGER,
+    PRIMARY KEY (movieid, countryid),
+    FOREIGN KEY (movieid)
+        REFERENCES imdb_movies (movieid)
+        ON DELETE CASCADE,
+    FOREIGN KEY (countryid)
+        REFERENCES imdb_countries (countryid)
+        ON DELETE CASCADE
+);
+
+-- POPULATE RELATION TABLES
+INSERT INTO imdb_genremovies (movieid, genreid)
+SELECT movieid, genreid
+FROM imdb_moviegenres as old_tab JOIN imdb_genres as new_tab ON old_tab.genre = new_tab.genre;
+
+INSERT INTO imdb_languagemovies (movieid, languageid)
+SELECT movieid, languageid
+FROM imdb_movielanguages as old_tab JOIN imdb_languages as new_tab ON old_tab.language = new_tab.language;
+
+INSERT INTO imdb_countrymovies (movieid, countryid)
+SELECT movieid, countryid
+FROM imdb_moviecountries as old_tab JOIN imdb_countries as new_tab ON old_tab.country = new_tab.country;
+
+-- DROP OLD (NOW USELESS) ATTRIBUTE TABLES
+DROP TABLE imdb_moviegenres;
+DROP TABLE imdb_movielanguages;
+DROP TABLE imdb_moviecountries;
 
 -- QUERIES UTILIZADAS EN PRUEBAS
 

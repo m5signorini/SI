@@ -14,7 +14,7 @@ PSQL = psql
 # INICIALIZADORES
 ########################
 
-all: clear_db populate_db setorder_db init_db setprice_db
+all: clear_db populate_db setorder_db init_db setprice_db gettops_db
 raw_db: clear_db populate_db
 
 
@@ -42,3 +42,5 @@ setprice_db:
 	psql -f setPrice.sql
 setorder_db:
 	psql -f setOrderAmount.sql
+gettops_db:
+	psql -f getTopActor.sql

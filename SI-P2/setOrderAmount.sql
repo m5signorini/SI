@@ -13,7 +13,7 @@ CREATE OR REPLACE PROCEDURE setOrderAmount ()
                     GROUP BY orderid
             )
             UPDATE orders
-                SET netamount = total, totalamount = total + tax
+                SET netamount = total, totalamount = total * (1 + tax/100)
                 FROM totals
                 WHERE totals.orderid = orders.orderid AND ((netamount IS NULL) OR (totalamount IS NULL));
         END
