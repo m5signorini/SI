@@ -14,7 +14,7 @@
     <div class="filterbox">
         {% for item in categories %}
         <div class="filter">
-            <input type="checkbox" id="cat{{loop.index}}" name="category" value="{{item}}" ><label for="cat{{loop.index}}">{{item}}</label>
+            <input type="checkbox" id="cat{{loop.index}}" name="category" value="{{ item }}" ><label for="cat{{loop.index}}">{{item}}</label>
         </div>
         {% endfor %}
     </div>

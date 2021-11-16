@@ -66,14 +66,14 @@ CREATE TABLE alerts (
 
 
 -- SET INITIAL CUSTOMER BALANCE
-CREATE OR REPLACE PROCEDURE setCustomersBalance (IN maxBalance bigint)
+CREATE OR REPLACE FUNCTION setCustomersBalance (IN maxBalance bigint) RETURNS void
     AS  $$
         BEGIN
         	UPDATE customers SET balance = floor(random() * (maxBalance + 1))::bigint;
         END
         $$
     LANGUAGE plpgsql;
-CALL setCustomersBalance(100);
+SELECT setCustomersBalance(100);
 
 
 -- IMDB_GENRES, IMDB_LANGUAGES, IMDB_COUNTRIES

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Top Actors{% endblock %}
+
+{% block head_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/top_actors.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class = "top_actors_content">
+  <h1>Top {{ genre }} actors</h1>
+
+  <table class="top_actors_products">
+      <tr>
+          <th>Actor</th>
+          <th>Numero</th>
+          <th>Fecha de debut</th>
+          <th>Pelicula</th>
+          <th>Director</th>
+      </tr>
+      {% for item in top_actors %}
+      <tr class="top_actors_product">
+          <th>{{ item[0] }}</th>
+          <th>{{ item[1] }}</th>
+          <th>{{ item[2] }}</th>
+          <th> <a href="{{ url_for('movie_page', id=item[5]) }}">{{ item[3] }}</a></th>
+          <th>{{ item[4] }}</th>
+      </tr>
+      {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

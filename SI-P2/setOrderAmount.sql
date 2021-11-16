@@ -2,7 +2,7 @@
 
 -- NOTA: llamar antes que actualiza.sql
 
-CREATE OR REPLACE PROCEDURE setOrderAmount ()
+CREATE OR REPLACE FUNCTION setOrderAmount () RETURNS void
     LANGUAGE plpgsql
     AS  $$
         BEGIN
@@ -18,4 +18,3 @@ CREATE OR REPLACE PROCEDURE setOrderAmount ()
                 WHERE totals.orderid = orders.orderid AND ((netamount IS NULL) OR (totalamount IS NULL));
         END
         $$;
-

@@ -13,17 +13,18 @@
 <div class="movie_content">
     <div class="top_part">
             <div class="image_movie">
-                <img src="{{ url_for('static', filename=movie.poster) }}" alt="">
+                <img src="{{ url_for('static', filename='img/sample2.jpg') }}" alt="">
             </div>
             <div class="movie_info">
-                <h1>{{movie.titulo}}</h1>
+                <h1>{{movie.title}}</h1>
                 <div class="movie_extra">
                     <div class="movie_info_">
                         <div class="movie_info__">
-                            <span>{{movie.anno}}</span>
+                            <span>{{movie.year}}</span>
                             <span>{{movie.duracion}}</span>
                         </div>
                         <a href="">{{movie.categoria}}</a>
+                        <p>La pelicula fue dirigida por: {{movie.director}}</p>
                     </div>
                     <div class="movie_rating">
 
@@ -36,7 +37,7 @@
     </div>
     <div class="bottom_part">
         <div class="movie_description">
-            <p class="text">{{movie.descripcion_resumen}}<span class="more_text">{{movie.descripcion_extra}}</span></p>
+            <p class="text">{{movie.description}}<span class="more_text">{{movie.description_extra}}</span></p>
         </div>
         <button class="see_more">Ver más</button>
     </div>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from app import app
+from app import app, database
 from flask import render_template, request, url_for, redirect, session, abort, jsonify
 import json
 import os
@@ -404,7 +404,12 @@ FUNCIONES DE ENRUTAMIENTO
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', movies=catalogue['peliculas'], categories=dict_genres.keys(), user=get_session_user())
+    aux = database.db_genres()
+    categories = list()
+    for item in aux:
+        categories.append(item[0])
+    print(categories)
+    return render_template('index.html', movies=catalogue['peliculas'], categories=categories, user=get_session_user())
 
 
 # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data
@@ -460,6 +465,11 @@ def signup_post():
     # Si solo se quiere la pagina
     return render_template('signup.html', user=get_session_user())
 
+@app.route('/top_actors/<string:genre>', methods=['GET'])
+def top_actors(genre):
+    top_actors = database.db_topActorsByGenre(genre)
+    return render_template('top_actors.html', user=get_session_user(), top_actors = top_actors, genre=genre)
+
 
 @app.route('/cart', methods=['GET'])
 def cart():
@@ -491,7 +501,8 @@ def add_to_cart(movie_id):
 
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])
 def movie_page(id):
-    return render_template('movie_page.html', user=get_session_user(),movie=catalogue['peliculas'][id])
+    movie = database.db_getMovieInfo(id)
+    return render_template('movie_page.html', user=get_session_user(),movie=movie)
 
 
 @app.route('/history',methods=['GET'])
