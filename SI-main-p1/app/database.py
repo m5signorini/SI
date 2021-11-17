@@ -363,7 +363,7 @@ def db_updateCustomerById(id, data):
         'creditcard' = '" + str(data['payment']) + "', \
         'username' = '" + str(data['username']) + "', \
         'balance' = " + str(data['money']) + " \
-        'loyalty' = " + str(data['points']) + " where customerid = {}".format(customerid)
+        'loyalty' = " + str(data['points']) + " where customerid = {}".format(id)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -410,6 +410,97 @@ def db_getCustomerByUsername(username, password):
         ret["points"]=item[7]
 
         return ret
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_generateHistoryData(userid):
+    try:
+        query = "select orderid, totalamount, orderdate from orders \
+        where customerid = {} and status is not NULL \
+        order by orderdate;".format(userid)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        aux = list(db_result)
+
+        history = dict()
+        history["Compras"] = []
+
+        for item in aux:
+            details = db_getMoviesByOrder(userid, item[0])
+            compras = []
+            for movie in details:
+                compras.append({'pelicula':movie[0], 'cantidad':movie[2], 'importe':movie[2]*movie[1]})
+            history["Compras"].append({"fecha":str(item[2]), "peliculas_compradas": compras, "precio_compra": item[1]})
+
+        return history
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_getMoviesByOrder(userid, orderid):
+    try:
+        query = "select imdb_movies.movietitle, products.price, orderdetail.quantity \
+        from orders \
+        join orderdetail on orderdetail.orderid = orders.orderid \
+        join products on orderdetail.prod_id = products.prod_id \
+        join imdb_movies on products.movieid = imdb_movies.movieid \
+        where orders.orderid = {} and orders.customerid = {};".format(orderid, userid)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        aux = list(db_result)
+
+        return aux
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_getProductsByMovie(movieid):
+    try:
+        query = "select * from products where movieid = {};".format(movieid)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        aux = list(db_result)
+
+        print(aux)
+
+        return aux
     except:
         if db_conn is not None:
             db_conn.close()

@@ -78,11 +78,11 @@ class User:
         self.money -= price_to_pay
         self.points += int(price_to_pay * 0.05)
         # Reescribimos el historial
-        history = self.get_history_from_server()
-        history['Compras'].append({'fecha':str(datetime.today()),'peliculas_compradas':cart.get_movies_in_cart(), 'precio_compra':cart.get_total_price()})
+        #history = self.get_history_from_server()
+        #history['Compras'].append({'fecha':str(datetime.today()),'peliculas_compradas':cart.get_movies_in_cart(), 'precio_compra':cart.get_total_price()})
         # Reescribimos el usuario
         self.update_on_server()
-        self.set_history_to_server(history)
+        #self.set_history_to_server(history)
         return True
 
     def validate_signup_form(self, form):
@@ -234,9 +234,9 @@ class User:
             #json.dump(data, outfile, ensure_ascii=False, indent=4)
 
         #Creamos historial.json
-        history = {"Compras":[]}
-        with open(path+'/historial.json', 'w', encoding='utf-8') as outfile:
-            json.dump(history, outfile, ensure_ascii=False, indent=4)
+        #history = {"Compras":[]}
+        #with open(path+'/historial.json', 'w', encoding='utf-8') as outfile:
+        #    json.dump(history, outfile, ensure_ascii=False, indent=4)
 
         database.db_insertCustomer(data)
 
@@ -262,16 +262,15 @@ class User:
         #if not os.path.exists(path):
             #return False
 
+        #with open(path, encoding="utf-8") as file:
+            #data = json.loads(file.read())
+
         if form['username'] not in database.db_getCustomersUsernames():
-            raise ExistingUserException(data['signusername'])
             return False
 
         data = database.db_getCustomerByUsername(form['username'], form['password'])
         if data == False:
             return data
-
-        #with open(path, encoding="utf-8") as file:
-            #data = json.loads(file.read())
 
         # Comprobamos la contraseña
         #hash = data['password']
@@ -522,14 +521,15 @@ def add_to_cart(movie_id):
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])
 def movie_page(id):
     movie = database.db_getMovieInfo(id)
-    return render_template('movie_page.html', user=get_session_user(),movie=movie)
+    products = database.db_getProductsByMovie(id)
+    return render_template('movie_page.html', user=get_session_user(),movie=movie, products=products)
 
 
 @app.route('/history',methods=['GET'])
 def history():
     user = get_session_user()
     if user.is_authenticated:
-        history = user.get_history_from_server()
+        history = database.db_generateHistoryData(user.id)
         return render_template('history.html', user=user, history=history['Compras'])
     else:
         abort(401)      # Acceso denegado si no esta iniciado sesion

@@ -36,6 +36,13 @@
             </div>
     </div>
     <div class="bottom_part">
+        <div class="products">
+            {% for item in products %}
+            <div class="product">
+                <input type="checkbox" id="cat{{loop.index}}" name="product_desc" value="{{ item[3] }}" ><label for="cat{{loop.index}}">{{item[3]}} {{item[2]}}$</label>
+            </div>
+            {% endfor %}
+        </div>
         <div class="movie_description">
             <p class="text">{{movie.description_resumen}}<span class="more_text">{{movie.description_extra}}</span></p>
         </div>
