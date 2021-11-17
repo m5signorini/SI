@@ -44,6 +44,7 @@ class ExistingUserException(Exception):
 class User:
     def __init__(self):
         self.is_authenticated = False
+        self.id=0
         self.username = None
         self.email = None
         self.address = None
@@ -99,11 +100,13 @@ class User:
         if not re.match(regex, data['signusername']):
             return False
         # ExistingUsername
-        path = os.path.join(app.root_path, "usuarios/"+data['signusername'])
-        if os.path.isdir(path):
+        #path = os.path.join(app.root_path, "usuarios/"+data['signusername'])
+        #if os.path.isdir(path):
+            #raise ExistingUserException(data['signusername'])
+            #return False
+        if data['signusername'] in database.db_getCustomersUsernames():
             raise ExistingUserException(data['signusername'])
             return False
-
         # Comprobar email:
         #InvalidForm
         if 'email' not in data.keys():
@@ -148,6 +151,7 @@ class User:
         self.payment = data['payment']
         self.money = random.randint(0,100)*100
         self.points = 0
+
         return True
 
     def update_from_server(self):
@@ -156,11 +160,14 @@ class User:
         usando self.username.
         Solamente es necesario por ahora recargar dinero y puntos
         """
-        path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
-        if not os.path.exists(path):
-            return False
-        with open(path, encoding="utf-8") as file:
-            data = json.loads(file.read())
+        #path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
+        #if not os.path.exists(path):
+        #    return False
+
+        #with open(path, encoding="utf-8") as file:
+            #data = json.loads(file.read())
+        print(str(self.id) + "################################################################")
+        data = database.db_getCustomerById(self.id)
         self.money = data['money']
         self.points = data['points']
         return True
@@ -174,18 +181,20 @@ class User:
         if not self.is_authenticated:
             return False
         # Actualizar data.dat
-        path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
-        if not os.path.exists(path):
-            return False
+        #path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
+        #if not os.path.exists(path):
+            #return False
         # Obtiene previo y guarda
-        with open(path, encoding="utf-8") as file:
-            data = json.loads(file.read())
+        #with open(path, encoding="utf-8") as file:
+            #data = json.loads(file.read())
+        data = database.db_getCustomerById(self.id)
         # Por ahora solo se puede modificar el dinero y los puntos
         data['points'] = self.points
         data['money'] = self.money
 
-        with open(path, 'w', encoding='utf-8') as outfile:
-            json.dump(data, outfile, ensure_ascii=False, indent=4)
+        #with open(path, 'w', encoding='utf-8') as outfile:
+        #    json.dump(data, outfile, ensure_ascii=False, indent=4)
+        database.db_updateCustomerById(self.id, data)
         return True
 
     def create_on_server(self, form):
@@ -197,38 +206,40 @@ class User:
             return False
 
         # Obtenemos salt y hasheamos
-        password = form['signpassword']
-        salt = os.urandom(16)
-        enco = bytes(password, 'utf-8')
-        hash = hashlib.blake2b(enco, salt=salt).hexdigest()
+        #password = form['signpassword']
+        #salt = os.urandom(16)
+        #enco = bytes(password, 'utf-8')
+        #hash = hashlib.blake2b(enco, salt=salt).hexdigest()
 
         # Creamos directorio
-        path = os.path.join(app.root_path, "usuarios/"+self.username)
-        try:
-            os.mkdir(path)
-        except OSError:
-            print("Creation of the directory %s failed" % path)
-        else:
-            print("Succesfully created the directory %s" % path)
+        #path = os.path.join(app.root_path, "usuarios/"+self.username)
+        #try:
+        #    os.mkdir(path)
+        #except OSError:
+        #    print("Creation of the directory %s failed" % path)
+        #else:
+        #    print("Succesfully created the directory %s" % path)
 
         data = {
-            'username': self.username,
-            'salt': salt.hex(),
-            'password': hash,
-            'payment': self.payment,
-            'email': self.email,
-            'address': self.address,
-            'money': self.money,
-            'points': self.points
+            'username': str(self.username),
+            'password': str(form['signpassword']),
+            'payment': str(self.payment),
+            'email': str(self.email),
+            'address': str(self.address),
+            'money': str(self.money),
+            'points': str(self.points)
         }
 
-        with open(path+'/data.dat', 'w', encoding='utf-8') as outfile:
-            json.dump(data, outfile, ensure_ascii=False, indent=4)
+        #with open(path+'/data.dat', 'w', encoding='utf-8') as outfile:
+            #json.dump(data, outfile, ensure_ascii=False, indent=4)
 
-        # Creamos historial.json
+        #Creamos historial.json
         history = {"Compras":[]}
         with open(path+'/historial.json', 'w', encoding='utf-8') as outfile:
             json.dump(history, outfile, ensure_ascii=False, indent=4)
+
+        database.db_insertCustomer(data)
+
         return True
 
     def get_from_server(self, form):
@@ -247,25 +258,33 @@ class User:
         if not re.match(regex, username):
             return False
 
-        path = os.path.join(app.root_path, "usuarios/"+username+"/data.dat")
-        if not os.path.exists(path):
+        #ath = os.path.join(app.root_path, "usuarios/"+username+"/data.dat")
+        #if not os.path.exists(path):
+            #return False
+
+        if form['username'] not in database.db_getCustomersUsernames():
+            raise ExistingUserException(data['signusername'])
             return False
 
-        with open(path, encoding="utf-8") as file:
-            data = json.loads(file.read())
+        data = database.db_getCustomerByUsername(form['username'], form['password'])
+        if data == False:
+            return data
+
+        #with open(path, encoding="utf-8") as file:
+            #data = json.loads(file.read())
 
         # Comprobamos la contraseña
-        password = form['password']
-        hash = data['password']
-        salt = bytes.fromhex(data['salt'])
-        enco = bytes(password, 'utf-8')
-        comp = hashlib.blake2b(enco, salt=salt).hexdigest()
+        #hash = data['password']
+        #salt = bytes.fromhex(data['salt'])
+        #enco = bytes(password, 'utf-8')
+        #comp = hashlib.blake2b(enco, salt=salt).hexdigest()
 
-        if compare_digest(hash, comp) is False:
-            return False
+        #if compare_digest(hash, comp) is False:
+        #    return False
 
         # Actualizar usuario con los datos:
         self.username = data['username']
+        self.id = data['id']
         self.email = data['email']
         self.address = data['address']
         self.payment = data['payment']
@@ -313,6 +332,7 @@ class User:
         self.email = data.get('email', None)
         self.address = data.get('address', None)
         self.payment = data.get('payment', None)
+        self.id = data.get('id', 0)
         self.money = data.get('money', 0)
         self.points = data.get('points', 0)
         self.is_authenticated = data.get('is_authenticated', False)
@@ -408,8 +428,8 @@ def index():
     categories = list()
     for item in aux:
         categories.append(item[0])
-    print(categories)
-    return render_template('index.html', movies=catalogue['peliculas'], categories=categories, user=get_session_user())
+    movies = database.db_populateCatalog()
+    return render_template('index.html', movies=movies, categories=categories, user=get_session_user())
 
 
 # doc sobre request object en http://flask.pocoo.org/docs/1.0/api/#incoming-request-data

@@ -36,6 +36,39 @@ ALTER TABLE imdb_actormovies ADD CONSTRAINT PK_actormovies PRIMARY KEY (actorid,
 -- CUSTOMERS: BALANCE & LOYALTY
 ALTER TABLE customers ADD balance BIGINT NOT NULL DEFAULT '0';
 ALTER TABLE customers ADD loyalty INT NOT NULL DEFAULT '0';
+ALTER TABLE customers
+DROP COLUMN "firstname";
+ALTER TABLE customers
+DROP COLUMN "lastname";
+ALTER TABLE customers
+DROP COLUMN "address2";
+ALTER TABLE customers
+DROP COLUMN "city";
+ALTER TABLE customers
+DROP COLUMN "country";
+ALTER TABLE customers
+DROP COLUMN "region";
+ALTER TABLE customers
+DROP COLUMN "creditcardtype";
+ALTER TABLE customers
+DROP COLUMN "creditcardexpiration";
+ALTER TABLE customers
+DROP COLUMN "age";
+ALTER TABLE customers
+DROP COLUMN "phone";
+ALTER TABLE customers
+DROP COLUMN "gender";
+ALTER TABLE customers
+DROP COLUMN "zip";
+ALTER TABLE customers
+DROP COLUMN "income";
+alter table customers
+drop column "state";
+
+
+
+
+
 
 -- MODIFICAR year TO SMALLINT
 -- USAMOS start_year Y end_year EN FUNCION DE YEAR

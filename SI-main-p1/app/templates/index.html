@@ -23,16 +23,16 @@
     {% for item in movies %}
     <div class="movie_preview">
         <div class="movie_title">
-            <h2><a href="{{ url_for('movie_page', id=item.id) }}">{{ item.titulo }}</a></h2>
+            <h2><a href="{{ url_for('movie_page', id=item.id) }}">{{ item.titulo }}</a></h2><!---->
         </div>
         <div class="movie_quickdata">
             <span class="director">{{ item.director }}</span>
             <span class="category">{{ item.categoria }}</span>
-            <span class="price">{{ item.precio/100 }} $</span>
+            <!--span class="price"> item.precio/100  $</span-->
         </div>
         <div class="movie_poster">
             <a href="{{ url_for('movie_page', id=item.id) }}">
-                <img src="{{ url_for('static', filename=item.poster) }}"alt="">
+                <img src="{{ url_for('static', filename='img/sample2.jpg') }}"alt="">
             </a>
         </div>
         <div class="movie_synopsis">
