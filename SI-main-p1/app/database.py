@@ -510,3 +510,73 @@ def db_getProductsByMovie(movieid):
         print("-"*60)
 
         return 'Something is broken'
+
+
+def db_getUserActualCart(userid):
+    try:
+        query = "select * from orders where customerid = {} and status is NULL;".format(userid)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        order = list(db_result)
+        order = order[0]
+
+        query = "select * from orderdetail\
+                join products on products.prod_id = orderdetail.prod_id\
+                join inventory on inventory.prod_id = orderdetail.prod_id\
+                join imdb_movies on products.movieid = imdb_movies.movieid\
+                where orderid = {};".format(order[0])
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        cart_entries = list(db_result)
+
+        cart = {'order':order,'orderdetails':cart_entries}
+        return cart
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+# Esta funcion la usaremos para ver si sigue habiendo productos de este tipo, en caso de que len(aux)
+# sea 0, sigue habiendo stock de dicho producto
+def db_getProductByIdAlert(product_id):
+    try:
+        query = "select * from products join alerts on alerts.inventoryid = inventory.inventoryid \
+        join inventory on inventory.prod_id = products.prod_id \
+        where prod_id = {};".format(product_id)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        aux = list(db_result)
+
+        return aux
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'

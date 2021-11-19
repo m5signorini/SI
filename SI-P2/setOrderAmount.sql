@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION setOrderAmount () RETURNS void
                     GROUP BY orderid
             )
             UPDATE orders
-                SET netamount = total, totalamount = total * (1 + tax/100)
+                SET netamount = total, totalamount = ROUND((total * (1 + tax/100))::numeric, 2)::numeric
                 FROM totals
                 WHERE totals.orderid = orders.orderid AND ((netamount IS NULL) OR (totalamount IS NULL));
         END

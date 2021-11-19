@@ -16,7 +16,7 @@ from datetime import datetime
 # Borrar todas las sesiones, para cuando se cambian tipos de datos
 app.secret_key = os.urandom(32)
 # Usamos el catalogo como variable global para tener acceso a las peliculas
-with open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8") as catalogue_fd:
+"""with open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8") as catalogue_fd:
     catalogue = json.loads(catalogue_fd.read())
 
 #Hacemos un diccionario para tener ya preparado el filtrado
@@ -30,7 +30,7 @@ for i in catalogue['peliculas']:
         else:
             aux = set()
             aux.add(i["id"])
-            dict_genres[j] = aux
+            dict_genres[j] = aux"""
 
 """
 CLASES AUXILIARES
@@ -343,8 +343,8 @@ class Cart:
         # Diccionario movie_id : cantidad
         self.items = dict()
 
-    def add_movie_to_cart(self, movie_id):
-        if int(movie_id) >= len(catalogue['peliculas']):
+    def add_movie_to_cart(self, product_id):
+        if len(database.db_getProductByIdAlert(product_id)) != 0:
             return
         if movie_id not in self.items:
             self.items[movie_id] = 0

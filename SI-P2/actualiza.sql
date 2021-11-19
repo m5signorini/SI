@@ -66,10 +66,6 @@ alter table customers
 drop column "state";
 
 
-
-
-
-
 -- MODIFICAR year TO SMALLINT
 -- USAMOS start_year Y end_year EN FUNCION DE YEAR
 ALTER TABLE imdb_movies ADD start_year SMALLINT;
@@ -188,6 +184,25 @@ FROM imdb_moviecountries as old_tab JOIN imdb_countries as new_tab ON old_tab.co
 DROP TABLE imdb_moviegenres;
 DROP TABLE imdb_movielanguages;
 DROP TABLE imdb_moviecountries;
+
+--TRIGGER PARA ASOCIAR UN CARRITO VACIO CUANDO SE CREA UN USUARIO NUEVO
+CREATE OR REPLACE FUNCTION tr_add_cart_customer() RETURNS trigger AS $$
+        BEGIN
+
+			insert into orders(orderid,orderdate, customerid, netamount, tax, totalamount)
+			select orderid+1, NOW(),new.customerid,0,15,0
+			from orders
+			order by orderid desc
+			limit 1;
+
+			return NEW;
+
+        END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER ADD_CART_CUSTOMER AFTER INSERT
+ON customers FOR EACH ROW
+EXECUTE PROCEDURE tr_add_cart_customer();
 -- QUERIES UTILIZADAS EN PRUEBAS
 
 --SELECT actormovies1.actorid , actormovies1.movieid FROM imdb_actormovies AS actormovies1 JOIN imdb_actormovies AS actormovies2

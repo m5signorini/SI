@@ -1,1 +1,3 @@
-select * from customers where username = 'JuanCarlos' and password = 'GBRi97UknmzbvSd';
+select * from products join alerts on alerts.inventoryid = inventory.inventoryid
+    join inventory on inventory.prod_id = products.prod_id
+    where prod_id = 10;
