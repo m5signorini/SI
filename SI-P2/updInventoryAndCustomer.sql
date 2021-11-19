@@ -16,12 +16,19 @@ CREATE OR REPLACE FUNCTION tr_update_inventory_customer() RETURNS trigger AS $$
 			set balance = balance - new.totalamount, loyalty = loyalty + ((new.totalamount*100) * 0.05)
 			from orders
 			where orders.orderid = old.orderid and customers.customerid = old.customerid;
+
+      insert into orders(orderid,orderdate, customerid, netamount, tax, totalamount)
+      select orderid+1, NOW(),new.customerid,0,15,0
+      from orders
+      order by orderid desc
+      limit 1;
+
 		END IF;
 
 			return NEW;
         END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER UPD_INVENTORY_CUSTOMER AFTER INSERT OR UPDATE
+CREATE TRIGGER UPD_INVENTORY_CUSTOMER AFTER UPDATE
 ON orders FOR EACH ROW
 EXECUTE PROCEDURE tr_update_inventory_customer();
