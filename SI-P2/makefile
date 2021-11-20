@@ -14,7 +14,7 @@ PSQL = psql
 # INICIALIZADORES
 ########################
 
-all: clear_db populate_db setorder_db init_db setprice_db gettops_db
+all: clear_db populate_db setorder_db init_db setprice_db gettops_db searchmovies_db
 raw_db: clear_db populate_db
 
 
@@ -44,3 +44,5 @@ setorder_db:
 	psql -f setOrderAmount.sql
 gettops_db:
 	psql -f getTopActor.sql
+searchmovies_db:
+	psql -f searchMovies.sql
