@@ -79,22 +79,26 @@ function password_input(e) {
     let target = $(e.target);
     let value = target.val();
     let stren = get_password_strength(value);
-    let mens, color;
+    let mens, color, percent;
     if(stren > 3) {
         if(stren > 6) {
             mens = 'Contraseña fuerte';
             color = 'green';
+            percent = '100%';
         }
         else {
             mens = 'Contraseña media';
             color = 'orange';
+            percent = '66%';
         }
     }
     else {
         mens = 'Contraseña débil';
         color = 'red';
+        percent = '33%'
     }
     set_span_message($('#strength_1'), mens, color);
+    set_bar_percent($('#strength_bar'), percent, color);
     return;
 }
 
@@ -138,13 +142,17 @@ function get_password_strength(password) {
         if(password.match(t)) {
             stren++;
         }
-    })
+    });
     return stren;
 }
 
 function set_span_message(element, message, color) {
     element.text(message);
     element.css({'color':color});
+}
+function set_bar_percent(element, percent, color) {
+    element.css({'width':percent});
+    element.css({'background-color':color});
 }
 
 function set_border_color_by_test(element, test) {
