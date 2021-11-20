@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "search.html" %}
 
 {% block title %} Indice {% endblock %}
 
@@ -25,6 +25,7 @@
         </div>
     </form>
 </div>
+{% block extra_container %}
 <div class="topactors_container">
     <div class="topactors_title">
         <h2>Top Actores Por Genero</h2>
@@ -41,6 +42,7 @@
     <div class="topactors_list">
     </div>
 </div>
+{% endblock %}
 <div class="movies_container">
     {% for item in movies %}
     <div class="movie_preview">

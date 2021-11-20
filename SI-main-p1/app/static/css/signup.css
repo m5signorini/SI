@@ -16,6 +16,7 @@
 .inputs_left div{
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 .strength {
     font-size: 10px;
@@ -62,4 +63,20 @@
 
 #payment{
     background-image:url("../img/credit-card.png");
+}
+
+#strength_bar_container {
+    width: 75%;
+    height: 20px;
+    padding: 2px;
+    border-color: darkgray;
+    border-width: 1px;
+    border-style: solid;
+    align-items: baseline;
+}
+
+#strength_bar {
+    width: 33%;
+    height: 100%;
+    background-color: red;
 }

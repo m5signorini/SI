@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Indice {% endblock %}
-
-{% block head_scripts %}
-<script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
-{% endblock %}
+{% block title %} Busqueda {% endblock %}
 
 {% block content%}
 <div class="searcher">
@@ -21,6 +17,7 @@
         </div>
     </form>
 </div>
+{% block extra_container %}{% endblock %}
 <div class="movies_container">
     {% for item in movies %}
     <div class="movie_preview">
