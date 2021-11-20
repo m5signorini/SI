@@ -11,7 +11,7 @@ function visitors_init() {
 
 function update_visitors() {
     $.ajax({
-        url: 'num_visitors',
+        url: '/num_visitors',
         type: 'GET',
         success: function(response){
             $('#num_visitors').text('Número de visitantes: ' + response);
