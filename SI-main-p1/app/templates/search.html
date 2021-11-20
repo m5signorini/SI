@@ -6,10 +6,6 @@
 <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 {% endblock %}
 
-{% block head_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-{% endblock %}
-
 {% block content%}
 <div class="searcher">
     <form action="search" method="post">
@@ -24,22 +20,6 @@
             {% endfor %}
         </div>
     </form>
-</div>
-<div class="topactors_container">
-    <div class="topactors_title">
-        <h2>Top Actores Por Genero</h2>
-    </div>
-    <div class="topactors_filter">
-        <label for="topactor_genre">Genero: </label>
-        <select name="topactor_genre" id="topactor_genre_select">
-            {% for item in categories %}
-            <option value="{{ item }}">{{ item }}</option>
-            {% endfor %}
-        </select>
-        <span><a href="{{ url_for('top_actors', genre='Fantasy') }}">Ver tabla</a></span>
-    </div>
-    <div class="topactors_list">
-    </div>
 </div>
 <div class="movies_container">
     {% for item in movies %}
@@ -63,7 +43,7 @@
         <div class="movie_footer">
             <div class="movie_add_to_cart">
                 <!--
-                <form action="url_for('add_to_cart', movie_id=item.id)" method="post">
+                <form action=" url_for('add_to_cart', movie_id=item.id)" method="post">
                     <button type="submit">Añadir a la carta</button>
                 </form>
                 -->

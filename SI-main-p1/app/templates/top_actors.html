@@ -20,11 +20,11 @@
       </tr>
       {% for item in top_actors %}
       <tr class="top_actors_product">
-          <th>{{ item[0] }}</th>
-          <th>{{ item[1] }}</th>
-          <th>{{ item[2] }}</th>
-          <th> <a href="{{ url_for('movie_page', id=item[5]) }}">{{ item[3] }}</a></th>
-          <th>{{ item[4] }}</th>
+          <th>{{ item.actor }}</th>
+          <th>{{ item.num }}</th>
+          <th>{{ item.debut }}</th>
+          <th> <a href="{{ url_for('movie_page', id=item.movieid) }}">{{ item.film }}</a></th>
+          <th>{{ item.director }}</th>
       </tr>
       {% endfor %}
   </table>

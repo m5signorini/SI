@@ -91,15 +91,13 @@ def db_topActorsByGenre(genre):
         db_conn = None
         db_conn = db_engine.connect()
 
-        db_result = db_conn.execute("Select * from getTopActors('Adventure') as top \
+        db_result = db_conn.execute("Select * from getTopActors('{}') as top \
                                     join imdb_movies on imdb_movies.movietitle=top.film \
-                                    order by top.Num desc".format(genre))
+                                    order by top.Num desc limit 10".format(genre))
 
         db_conn.close()
-
-        aux = list(db_result)
-
-        return aux[0:10]
+        as_list = [{column: value for column, value in rowproxy.items()} for rowproxy in db_result]
+        return as_list
     except:
         if db_conn is not None:
             db_conn.close()
