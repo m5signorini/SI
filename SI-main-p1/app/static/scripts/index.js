@@ -1,5 +1,5 @@
 //Filtrado por todo, descricion
-
+/*
 var current_filters = new Set();
 
 $('document').ready(function(){
@@ -36,3 +36,4 @@ function filter_all(texts) {
         $(this).toggle(show);
     });
 }
+*/

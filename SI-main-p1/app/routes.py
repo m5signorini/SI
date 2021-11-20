@@ -416,6 +416,13 @@ def get_session_cart():
         cart.loadJSON(session['cart'])
     return cart
 
+def get_all_categories():
+    aux = database.db_genres()
+    categories = list()
+    for item in aux:
+        categories.append(item[0])
+    return categories
+
 """
 FUNCIONES DE ENRUTAMIENTO
 """
@@ -423,10 +430,7 @@ FUNCIONES DE ENRUTAMIENTO
 @app.route('/')
 @app.route('/index')
 def index():
-    aux = database.db_genres()
-    categories = list()
-    for item in aux:
-        categories.append(item[0])
+    categories = get_all_categories()
     movies = database.db_populateCatalog()
     return render_template('index.html', movies=movies, categories=categories, user=get_session_user())
 
@@ -633,6 +637,25 @@ def num_points(change):
     else:
         return "Te quedarían " + str(balance) + " puntos"
 
+# Ruta para realizar busquedas
+@app.route('/search', methods=['POST'])
+def search_movies():
+
+    # Si llega formulario de busqueda, la realizamos
+    if request.form:
+        # request.form es multidict, asi pues:
+        # usar request.form.getlist('category')
+        try:
+            query = request.form.get('search', '')
+            categories = request.form.getlist('category')
+            if len(categories) < 1:
+                categories = get_all_categories()
+            results = database.db_searchMovies(query, categories)
+            print(results)
+            return render_template('index.html', movies=results, categories=get_all_categories(), user=get_session_user())
+        except:
+            return
+    return "Que haces aqui?"
 
 """
 RUTAS DE CODIGOS DE ESTADO

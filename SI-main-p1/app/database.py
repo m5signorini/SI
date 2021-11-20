@@ -4,7 +4,7 @@ import os
 import sys, traceback
 from sqlalchemy import create_engine, func
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, text
-from sqlalchemy.sql import select
+from sqlalchemy.sql import select, func, column
 
 import random, string
 
@@ -20,6 +20,46 @@ descripcion_extra="Es la cuarta entrega de la saga Star Wars y la primera en el 
 
 #Macro para determinar cuantas peliculas cargamos en la pagina inicializa
 LIMIT = 100
+
+# METODOS AUXILIARES
+####################
+
+def generate_movieList(result):
+    """
+    Given a result from execute containing a movieid column
+    generates the necessary data for each id.
+    """
+    # Convertimos el proxy 'result' en una lista de dicts mas legible
+    as_list = [{column: value for column, value in rowproxy.items()} for rowproxy in result]
+
+    # Si la lista es vacia o no de la forma correcta, devolvemos []
+    if len(as_list) < 1:
+        return []
+    if not 'movieid' in as_list[0].keys():
+        return []
+
+    movieList = []
+    for item in as_list:
+        movieDict = dict()
+        id = item.get('movieid', None)
+        if not id:
+            continue
+        movieDict['descripcion_resumen'] = item.get('descripcion_resumen', descripcion_resumen)
+        movieDict['titulo'] = item.get('titulo', item.get('movietitle', None))
+        if not movieDict['titulo']:
+            info = db_getMovieInfo(id)
+            if not info:
+                continue
+            movieDict['titulo'] = info['title']
+        movieDict['director'] = db_getMovieDirectors(id)
+        movieDict['categoria'] = db_getMovieGenres(id)
+        movieDict['id'] = id
+        movieList.append(movieDict)
+
+    return movieList
+
+# METODOS DE ACCESO A DATOS
+###########################
 
 def db_listOfMovies1949():
     try:
@@ -90,6 +130,15 @@ def db_getMovieInfo(movie):
         db_conn.close()
 
         result_list = list(db_result)
+
+        ##############################################################################
+        # ATENCION:
+        # ERROR - HAY PELICULAS SIN DIRECTORES POR LO TANTO LOS DETALLES ACABAN VACIOS
+        # SOLUCION: REFACTORIZAR EL CODIGO PARA HACER LAS CONSULTAS DE DETALLES, 
+        # GENEROS Y DIRECTORES POR SEPARADO
+        # EJEMPLO: MOVIEID = 77860
+        ###############################################################################
+
         aux = result_list[0]
 
         movieDict = dict()
@@ -119,7 +168,8 @@ def db_getMovieInfo(movie):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        # Devolver None para poder gestionar el error
+        return None
 
 def db_genres():
     try:
@@ -580,3 +630,26 @@ def db_getProductByIdAlert(product_id):
         print("-"*60)
 
         return 'Something is broken'
+
+
+def db_searchMovies(title, categories):
+    try:
+        # query = "select * from searchMovies(:title, :categories)"
+        db_conn = None
+        db_conn = db_engine.connect()
+        db_result = db_conn.execute(
+            select([column('movieid')])
+                .select_from(func.searchMovies(title, categories))
+                .limit(1000)
+            )
+        db_conn.close()
+        # db_result has a list of tuples with title and id
+        movieList = generate_movieList(db_result)
+        return movieList
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)

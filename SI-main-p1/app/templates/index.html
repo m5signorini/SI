@@ -8,22 +8,24 @@
 
 {% block content%}
 <div class="searcher">
-    <div class="searchbox">
-        <input id="mySearchBox" type="text" placeholder="Search...">
-    </div>
-    <div class="filterbox">
-        {% for item in categories %}
-        <div class="filter">
-            <input type="checkbox" id="cat{{loop.index}}" name="category" value="{{ item }}" ><label for="cat{{loop.index}}">{{item}}</label>
+    <form action="search" method="post">
+        <div class="searchbox">
+            <input id="mySearchBox" type="text" name="search" placeholder="Search...">
         </div>
-        {% endfor %}
-    </div>
+        <div class="filterbox">
+            {% for item in categories %}
+            <div class="filter">
+                <input type="checkbox" id="cat{{loop.index}}" name="category" value="{{ item }}" ><label for="cat{{loop.index}}">{{item}}</label>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
 </div>
 <div class="movies_container">
     {% for item in movies %}
     <div class="movie_preview">
         <div class="movie_title">
-            <h2><a href="{{ url_for('movie_page', id=item.id) }}">{{ item.titulo }}</a></h2><!---->
+            <h2><a href="{{ url_for('movie_page', id=item.id) }}">{{ item.titulo }}</a></h2>
         </div>
         <div class="movie_quickdata">
             <span class="director">{{ item.director }}</span>
