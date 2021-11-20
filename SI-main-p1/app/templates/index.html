@@ -10,21 +10,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
-{% block content%}
-<div class="searcher">
-    <form action="search" method="post">
-        <div class="searchbox">
-            <input id="mySearchBox" type="text" name="search" placeholder="Search...">
-        </div>
-        <div class="filterbox">
-            {% for item in categories %}
-            <div class="filter">
-                <input type="checkbox" id="cat{{loop.index}}" name="category" value="{{ item }}" ><label for="cat{{loop.index}}">{{item}}</label>
-            </div>
-            {% endfor %}
-        </div>
-    </form>
-</div>
+
 {% block extra_container %}
 <div class="topactors_container">
     <div class="topactors_title">
@@ -43,35 +29,3 @@
     </div>
 </div>
 {% endblock %}
-<div class="movies_container">
-    {% for item in movies %}
-    <div class="movie_preview">
-        <div class="movie_title">
-            <h2><a href="{{ url_for('movie_page', id=item.id) }}">{{ item.titulo }}</a></h2>
-        </div>
-        <div class="movie_quickdata">
-            <span class="director">{{ item.director }}</span>
-            <span class="category">{{ item.categoria }}</span>
-            <!--span class="price"> item.precio/100  $</span-->
-        </div>
-        <div class="movie_poster">
-            <a href="{{ url_for('movie_page', id=item.id) }}">
-                <img src="{{ url_for('static', filename='img/sample2.jpg') }}"alt="">
-            </a>
-        </div>
-        <div class="movie_synopsis">
-            <span>{{ item.descripcion_resumen }}</span>
-        </div>
-        <div class="movie_footer">
-            <div class="movie_add_to_cart">
-                <!--
-                <form action="url_for('add_to_cart', movie_id=item.id)" method="post">
-                    <button type="submit">Añadir a la carta</button>
-                </form>
-                -->
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
- {% endblock %}
