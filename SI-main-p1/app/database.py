@@ -134,7 +134,7 @@ def db_getMovieInfo(movie):
         ##############################################################################
         # ATENCION:
         # ERROR - HAY PELICULAS SIN DIRECTORES POR LO TANTO LOS DETALLES ACABAN VACIOS
-        # SOLUCION: REFACTORIZAR EL CODIGO PARA HACER LAS CONSULTAS DE DETALLES, 
+        # SOLUCION: REFACTORIZAR EL CODIGO PARA HACER LAS CONSULTAS DE DETALLES,
         # GENEROS Y DIRECTORES POR SEPARADO
         # EJEMPLO: MOVIEID = 77860
         ###############################################################################
@@ -576,7 +576,7 @@ def db_getUserActualCart(userid):
         order = list(db_result)
         order = order[0]
 
-        query = "select * from orderdetail\
+        query = "select imdb_movies.movietitle, orderdetail.quantity, orderdetail.price, products.price, products.description, products.prod_id  from orderdetail\
                 join products on products.prod_id = orderdetail.prod_id\
                 join inventory on inventory.prod_id = orderdetail.prod_id\
                 join imdb_movies on products.movieid = imdb_movies.movieid\
@@ -631,6 +631,70 @@ def db_getProductByIdAlert(product_id):
 
         return 'Something is broken'
 
+def db_insertOrderdetail(orderid, product_id):
+    try:
+        query = "insert into orderdetail \
+                values ({}, {}, (select products.price\
+                                from products \
+                                where prod_id = {}),1);".format(orderid, product_id, product_id)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_updateOrderdetail(orderid, product_id, new_quantity):
+    try:
+        if new_quantity != 0:
+            query = "update orderdetail \
+                    set price = {}*(select products.price from products \
+                                join orderdetail on products.prod_id=orderdetail.prod_id\
+                                where orderdetail.orderid = {} and products.prod_id={}), \
+                        quantity = {} where orderid = {} and prod_id = {};".format(new_quantity, orderid, product_id, new_quantity, orderid, product_id)
+            # conexion a la base de datos
+            db_conn = None
+            db_conn = db_engine.connect()
+
+            db_result = db_conn.execute(query)
+
+            db_conn.close()
+        else:
+            query = "delete from orderdetail\
+                    where prod_id = {} and orderid = {};".format(product_id, orderid)
+            # conexion a la base de datos
+            db_conn = None
+            db_conn = db_engine.connect()
+
+            db_result = db_conn.execute(query)
+
+            db_conn.close()
+
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+
 
 def db_searchMovies(title, categories):
     try:
@@ -653,3 +717,5 @@ def db_searchMovies(title, categories):
         print("-"*60)
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
+
+        return 'Something is broken'

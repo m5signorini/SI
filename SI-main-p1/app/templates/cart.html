@@ -22,22 +22,22 @@
         </div>
         {% for item in movies_in_cart %}
         <div class="cart_product">
-            <img class="product_image" src="{{ url_for('static', filename=item.pelicula.poster) }}" alt="">
+            <img class="product_image" src="{{ url_for('static', filename='img/sample2.jpg') }}" alt="">
             <div class="product_dcp">
-                <p>{{ item['pelicula'].titulo }}</p>
+                <p>{{ item['pelicula'].titulo }} </p>
                 <span>{{ item['pelicula'].descripcion }}</span>
             </div>
-            <div class="product_price">{{ item['pelicula'].precio/100 }} $</div>
+            <div class="product_price">{{ item['pelicula'].precio }} $</div>
             <div class="product_id">{{ item['pelicula'].id }}</div>
             <div class="product_quantity">
                 <input class="copies_in_cart" name="copies_in_cart" type="number" value={{item.cantidad}} min="1">
             </div>
             <button class="product_remove" type="button">Eliminar</button>
-            <div class="products_total_price">{{ item['importe']/100 }} $</div>
+            <div class="products_total_price">{{ item['importe'] }} $</div>
         </div>
         {% endfor %}
         <div class="checkout_part">
-            <div class="total_price_calculation">{{ total_price/100 }} $</div>
+            <div class="total_price_calculation">{{ total_price }} $</div>
             <form action="{{url_for('checkout')}}" method="get">
                 <button type="submit" class="checkout">Checkout</button>
             </form>
