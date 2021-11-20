@@ -680,6 +680,16 @@ def search_movies():
             return
     return "Que haces aqui?"
 
+# Ruta para obtener listado de top actores
+@app.route('/get_topactors', methods=['GET'])
+def get_topactors():
+    genre = request.values.get('genre', None)
+    if not genre:
+        return jsonify([])
+    results = database.db_topActorsByGenre(genre)
+    to_json = jsonify(results)
+    return to_json
+
 """
 RUTAS DE CODIGOS DE ESTADO
 Invocadas mediante el metodo abort, e.g: abort(401)
