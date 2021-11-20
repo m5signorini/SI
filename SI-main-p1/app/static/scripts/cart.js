@@ -13,8 +13,8 @@ function update_number() {
         type: 'POST',
         success: function(response){
             aux=response.split("/");
-            $(updated).parent().parent().children('.products_total_price').text(parseInt(aux[0]) + " $");
-            $('.total_price_calculation').text(parseInt(aux[1]) + " $");
+            $(updated).parent().parent().children('.products_total_price').text(parseFloat(aux[0]) + " $");
+            $('.total_price_calculation').text(parseFloat(aux[1]) + " $");
         },
         error: function(data) {
             console.log('Error al obtener numero de puntos');
@@ -28,7 +28,7 @@ function remove_item(){
         type: 'POST',
         success: function(response){
             aux=response.split("/");
-            $('.total_price_calculation').text(parseInt(aux[1]) + " $");
+            $('.total_price_calculation').text(parseFloat(aux[1]) + " $");
         },
         error: function(data) {
             console.log('Error al obtener numero de puntos');

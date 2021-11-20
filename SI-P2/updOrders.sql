@@ -3,18 +3,18 @@ CREATE OR REPLACE FUNCTION tr_update_orders() RETURNS trigger AS $$
         BEGIN
 			IF (TG_OP = 'INSERT') THEN
 				UPDATE orders
-				set netamount = netamount+(NEW.price * NEW.quantity),
-							totalamount = totalamount+((NEW.price * NEW.quantity)/tax+(NEW.price * NEW.quantity))
+				set netamount = netamount+(NEW.price),
+							totalamount = (totalamount + ROUND(((NEW.price) * (1+tax/100))::numeric,2))::numeric
 				where orders.orderid = new.orderid;
 			ELSIF (TG_OP = 'UPDATE') THEN
 				UPDATE orders
-				set netamount = netamount+((NEW.price * NEW.quantity)-(OLD.price * OLD.quantity)),
-							totalamount = totalamount+(((NEW.price * NEW.quantity)-(OLD.price * OLD.quantity))/tax+((NEW.price * NEW.quantity)-(OLD.price * OLD.quantity)))
+				set netamount = netamount+((NEW.price)-(OLD.price)),
+							totalamount = (totalamount + ROUND((((NEW.price)-(OLD.price)) * (1+tax/100))::numeric,2))::numeric
 				where orders.orderid = new.orderid;
 			ELSE
 				UPDATE orders
-				set netamount = netamount-(OLD.price * OLD.quantity),
-							totalamount = totalamount-((OLD.price * OLD.quantity)/tax+(OLD.price * OLD.quantity))
+				set netamount = netamount-(OLD.price),
+							totalamount = (totalamount- ROUND(((OLD.price) * (1+tax/100))::numeric,2))::numeric
 				where orders.orderid = OLD.orderid;
 			END IF;
 

@@ -506,7 +506,7 @@ def db_generateHistoryData(userid):
 
 def db_getMoviesByOrder(userid, orderid):
     try:
-        query = "select imdb_movies.movietitle, products.price, orderdetail.quantity \
+        query = "select imdb_movies.movietitle, products.price, orderdetail.quantity, products.prod_id \
         from orders \
         join orderdetail on orderdetail.orderid = orders.orderid \
         join products on orderdetail.prod_id = products.prod_id \
@@ -629,20 +629,33 @@ def db_getProductByIdAlert(product_id):
 
         return 'Something is broken'
 
-def db_insertOrderdetail(orderid, product_id):
+def db_insertOrderdetail(orderid, product_id, userid):
     try:
-        query = "insert into orderdetail \
-                values ({}, {}, (select products.price\
-                                from products \
-                                where prod_id = {}),1);".format(orderid, product_id, product_id)
-        # conexion a la base de datos
-        db_conn = None
-        db_conn = db_engine.connect()
+        order_info = db_getMoviesByOrder(userid, product_id)
+        flag = 0
+        actual_quantity = 0
 
-        db_result = db_conn.execute(query)
+        for item in order_info:
+            if item[3] == product_id:
+                flag = 1
+                actual_quantity = item[2]
+                break
 
-        db_conn.close()
+        if flag == 0:
+            query = "insert into orderdetail \
+                    values ({}, {}, (select products.price\
+                                    from products \
+                                    where prod_id = {}),1);".format(orderid, product_id, product_id)
+            # conexion a la base de datos
+            db_conn = None
+            db_conn = db_engine.connect()
 
+            db_result = db_conn.execute(query)
+
+            db_conn.close()
+
+        else:
+            db_updateOrderdetail(orderid, product_id, actual_quantity + 1)
 
         return True
     except:

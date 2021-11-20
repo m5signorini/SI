@@ -1,7 +1,7 @@
 #
 # 	Autores:
 # 	Martin Sanchez Signorini
-#	
+#
 #
 
 export PGDATABASE := si1
@@ -14,7 +14,7 @@ PSQL = psql
 # INICIALIZADORES
 ########################
 
-all: clear_db populate_db setorder_db init_db setprice_db gettops_db searchmovies_db
+all: clear_db populate_db setorder_db init_db setprice_db gettops_db searchmovies_db inventorycustomertrigger_db orderstrigger_db
 raw_db: clear_db populate_db
 
 
@@ -26,7 +26,7 @@ clear_db:
 	createdb
 
 populate_db:
-	gunzip -c dump_v1.4.sql.gz | psql si1 
+	gunzip -c dump_v1.4.sql.gz | psql si1
 
 show_dbs:
 	echo '\l' | psql
@@ -46,3 +46,7 @@ gettops_db:
 	psql -f getTopActor.sql
 searchmovies_db:
 	psql -f searchMovies.sql
+inventorycustomertrigger_db:
+	psql -f updInventoryAndCustomer.sql
+orderstrigger_db:
+	psql -f updOrders.sql

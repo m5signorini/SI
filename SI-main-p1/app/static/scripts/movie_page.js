@@ -13,5 +13,16 @@ function init() {
         }else{
             see_more_button.innerText = 'Ver más';
         }
-    })
+    });
+
+    $('input[type="checkbox"]').on('change', function() {
+       $('input[type="checkbox"]').not(this).prop('checked', false);
+    });
+
+    $('.purchase_button').on('click', add_to_cart);
+
+}
+
+function add_to_cart() {
+    $.get('add_to_cart/' + $('input:checked').val());
 }

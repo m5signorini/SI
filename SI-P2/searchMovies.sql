@@ -4,7 +4,7 @@
 
 
 CREATE OR REPLACE FUNCTION searchMovies(title TEXT, categories TEXT[])
-RETURNS TABLE (movieid imdb_movies.movietitle%TYPE, movieid imdb_movies.movieid%TYPE)
+RETURNS TABLE (movietitle imdb_movies.movietitle%TYPE, movieid imdb_movies.movieid%TYPE)
 LANGUAGE plpgsql
 AS $$
     BEGIN

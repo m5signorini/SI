@@ -96,3 +96,7 @@
     background-color:white;
     border-style:none;
 }
+
+.prod_id{
+  display: hide;
+}
