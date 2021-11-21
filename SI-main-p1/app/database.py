@@ -274,7 +274,8 @@ def db_populateCatalog():
         db_conn = None
         db_conn = db_engine.connect()
 
-        db_result = db_conn.execute("select imdb_movies.movietitle, imdb_movies.movieid from imdb_movies")
+        db_result = db_conn.execute("select imdb_movies.movietitle, imdb_movies.movieid \
+            from imdb_movies LIMIT {}".format(LIMIT))
 
         db_conn.close()
 
@@ -282,7 +283,7 @@ def db_populateCatalog():
 
         moviesList = list()
 
-        for item in aux[0:LIMIT]:
+        for item in aux:
             movieDict = dict()
             movieDict["descripcion_resumen"] = descripcion_resumen
             movieDict["titulo"] = item[0]
@@ -381,7 +382,7 @@ def db_insertCustomer(data):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return False
 
 def db_getCustomerById(customerid):
     try:
@@ -417,7 +418,7 @@ def db_getCustomerById(customerid):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return None
 
 def db_updateCustomerById(id, data):
     try:
@@ -445,14 +446,11 @@ def db_updateCustomerById(id, data):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return False
 
 def db_getCustomerByUsername(username, password):
     try:
-        print(username)
-        print(password)
         query = "select * from customers where username = '{}' and password = '{}';".format(username, password)
-        print(query)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -462,6 +460,8 @@ def db_getCustomerByUsername(username, password):
         db_conn.close()
 
         aux = list(db_result)
+        if len(aux) < 1:
+            return False
         item = aux[0]
 
         ret = dict()
@@ -482,13 +482,13 @@ def db_getCustomerByUsername(username, password):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return False
 
 def db_generateHistoryData(userid):
     try:
         query = "select orderid, totalamount, orderdate from orders \
         where customerid = {} and status is not NULL \
-        order by orderdate;".format(userid)
+        order by orderdate DESC;".format(userid)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -815,7 +815,7 @@ def db_searchMovies(title, categories):
         db_result = db_conn.execute(
             select([column('movieid')])
                 .select_from(func.searchMovies(title, categories))
-                .limit(1000)
+                .limit(LIMIT*10)
             )
         db_conn.close()
         # db_result has a list of tuples with title and id

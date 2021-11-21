@@ -68,6 +68,10 @@
     cursor: pointer;
 }
 
+.purchase_button:active {
+    background-color: darkgreen;
+}
+
 .bottom_part{
     text-align: center;
     display: flex;

@@ -78,7 +78,7 @@ class User:
         """
         data = form.to_dict()
         # Comprobar username:
-        #InvalidForm
+        # InvalidForm
         if 'signusername' not in data.keys():
             return False
         # ValidUsername
@@ -202,7 +202,7 @@ class User:
 
         data = database.db_getCustomerByUsername(form['username'], form['password'])
         if data == False:
-            return data
+            return False
 
         # Actualizar usuario con los datos:
         self.username = data['username']
@@ -387,7 +387,7 @@ def login():
             return redirect(url_for('index'))
         else:
             # Login Erroneo
-            return redirect(url_for('index'))
+            return render_template('login.html', user=get_session_user(), last_user=None)
     # Si no hay formulario
     last_user = session.get('last_user', None)
     return render_template('login.html', user=get_session_user(), last_user=last_user)
@@ -452,10 +452,7 @@ def cart():
                         database.db_updateOrderdetail(database_cart['order'][0], item['pelicula']['id'], item['cantidad'])
                     cart.update_movie_in_cart(item['pelicula']['id'], 0)
 
-
         session['cart'] = cart.toJSON()
-
-
         cart = database.db_getUserActualCart(user.id)
         movies_data = []    # Includes prices and quantity
         for item in cart['orderdetails']:
@@ -467,7 +464,7 @@ def cart():
         cart = get_session_cart()
         movies_data = cart.get_movies_in_cart()
         total_price = cart.get_total_price()
-
+        total_price = round(total_price*1.15, 2)
         return render_template('cart.html', movies_in_cart=movies_data, user=user, total_price=total_price)
 
 
@@ -498,6 +495,7 @@ def cart_update(new_number,id):
 
         price = cart.get_item_price(id)
         total = cart.get_total_price()
+        total = round(total*1.15, 2)
 
         session['cart'] = cart.toJSON()
         session.modified = True
@@ -647,23 +645,18 @@ def num_points(change):
         return "Te quedarían " + str(balance) + " puntos"
 
 # Ruta para realizar busquedas
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['GET'])
 def search_movies():
-
-    # Si llega formulario de busqueda, la realizamos
-    if request.form:
-        # request.form es multidict, asi pues:
-        # usar request.form.getlist('category')
-        try:
-            query = request.form.get('search', '')
-            categories = request.form.getlist('category')
-            if len(categories) < 1:
-                categories = get_all_categories()
-            results = database.db_searchMovies(query, categories)
-            return render_template('search.html', movies=results, categories=get_all_categories(), user=get_session_user())
-        except:
-            abort(401)
-    else:
+    # request.form es multidict, asi pues:
+    # usar request.form.getlist('category')
+    try:
+        query = request.values.get('search', '')
+        categories = request.values.getlist('category')
+        if len(categories) < 1:
+            categories = get_all_categories()
+        results = database.db_searchMovies(query, categories)
+        return render_template('search.html', movies=results, categories=get_all_categories(), user=get_session_user())
+    except:
         abort(401)
 
 # Ruta para obtener listado de top actores

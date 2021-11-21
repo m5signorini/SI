@@ -12,24 +12,24 @@
 {% block content %}
 <div class="movie_content">
     <div class="top_part">
-            <div class="image_movie">
-                <img src="{{ url_for('static', filename='img/sample2.jpg') }}" alt="">
-            </div>
-            <div class="movie_info">
-                <h1>{{movie.title}}</h1>
-                <div class="movie_extra">
-                    <div class="movie_info_">
-                        <div class="movie_info__">
-                            <span>{{movie.year}}</span>
-                            <span>{{movie.duracion}}</span>
-                        </div>
-                        <a href="">{{movie.categoria}}</a>
-                        <p>La pelicula fue dirigida por: {{movie.director}}</p>
+        <div class="image_movie">
+            <img src="{{ url_for('static', filename='img/sample2.jpg') }}" alt="">
+        </div>
+        <div class="movie_info">
+            <h1>{{movie.title}}</h1>
+            <div class="movie_extra">
+                <div class="movie_info_">
+                    <div class="movie_info__">
+                        <span>{{movie.year}}</span>
+                        <span>{{movie.duracion}}</span>
                     </div>
-                    <div class="movie_rating">
-                    </div>
+                    <a href="">{{movie.categoria}}</a>
+                    <p>La pelicula fue dirigida por: {{movie.director}}</p>
+                </div>
+                <div class="movie_rating">
                 </div>
             </div>
+        </div>
     </div>
     <div class="bottom_part">
         <div class="products">

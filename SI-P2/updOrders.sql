@@ -2,11 +2,27 @@
 CREATE OR REPLACE FUNCTION tr_update_orders() RETURNS trigger AS $$
         BEGIN
 			IF (TG_OP = 'INSERT') THEN
+				IF EXISTS (
+					SELECT * from inventory
+					where inventory.prod_id = new.prod_id
+						and stock < new.quantity
+				) THEN
+					RAISE EXCEPTION 'Not enough stock';
+				END IF;
+
 				UPDATE orders
 				set netamount = netamount+(NEW.price),
 							totalamount = (totalamount + ROUND(((NEW.price) * (1+tax/100))::numeric,2))::numeric
 				where orders.orderid = new.orderid;
 			ELSIF (TG_OP = 'UPDATE') THEN
+				IF EXISTS (
+					SELECT * from inventory
+					where inventory.prod_id = new.prod_id
+						and stock < new.quantity
+				) THEN
+					RAISE EXCEPTION 'Not enough stock';
+				END IF;
+				
 				UPDATE orders
 				set netamount = netamount+((NEW.price)-(OLD.price)),
 							totalamount = (totalamount + ROUND((((NEW.price)-(OLD.price)) * (1+tax/100))::numeric,2))::numeric

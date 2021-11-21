@@ -37,6 +37,7 @@
         </div>
         {% endfor %}
         <div class="checkout_part">
+            <span>Precio total con impuestos</span>
             <div class="total_price_calculation">{{ total_price }} $</div>
             <form action="{{url_for('checkout')}}" method="get">
                 <button type="submit" class="checkout">Checkout</button>
