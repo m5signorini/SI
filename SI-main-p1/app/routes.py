@@ -28,7 +28,7 @@ class ExistingUserException(Exception):
 class User:
     def __init__(self):
         self.is_authenticated = False
-        self.id=0
+        self.id = 0
         self.username = None
         self.email = None
         self.address = None
@@ -47,8 +47,8 @@ class User:
         if not form:
             return False
 
-        # if len(cart.items.keys()) < 1:
-        #    return False
+        if len(cart['orderdetails']) < 1:
+            return False
         
         total_price = cart['order'][5]
 
@@ -553,6 +553,8 @@ def checkout():
         for prod in cart['orderdetails']:
             num_products += prod[2]
         total_price = cart['order'][5]
+        if num_products < 1:
+            return redirect('/cart')
         return render_template('checkout.html', user=get_session_user(), num_products=num_products, total_price=total_price)
     else:
         # TODO: Añadir mensaje de aviso de inicio de sesion necesario

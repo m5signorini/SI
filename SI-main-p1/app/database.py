@@ -551,7 +551,9 @@ def db_getMoviesByOrder(userid, orderid):
 
 def db_getProductsByMovie(movieid):
     try:
-        query = "select * from products where movieid = {};".format(movieid)
+        query = "select products.*, stock from products \
+            join inventory as inv on inv.prod_id = products.prod_id\
+            where movieid = {};".format(movieid)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()

@@ -35,7 +35,8 @@
         <div class="products">
             {% for item in products %}
             <div class="product">
-                <input type="checkbox" id="cat{{loop.index}}" name="product_desc" value="{{ item[0] }}" ><label for="cat{{loop.index}}">{{item[3]}} {{item[2]}}$</label>
+                <input type="checkbox" id="cat{{loop.index}}" name="product_desc" value="{{ item[0] }}" >
+                <label for="cat{{loop.index}}">{{item[3]}} {{item[2]}}$ (Stock: {{ item[4] }})</label>
             </div>
             {% endfor %}
         </div>
