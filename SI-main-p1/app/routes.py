@@ -15,22 +15,6 @@ from datetime import datetime
 
 # Borrar todas las sesiones, para cuando se cambian tipos de datos
 app.secret_key = os.urandom(32)
-# Usamos el catalogo como variable global para tener acceso a las peliculas
-"""with open(os.path.join(app.root_path,'catalogue/catalogue.json'), encoding="utf-8") as catalogue_fd:
-    catalogue = json.loads(catalogue_fd.read())
-
-#Hacemos un diccionario para tener ya preparado el filtrado
-dict_genres = dict()
-for i in catalogue['peliculas']:
-    for j in i["categoria"]:
-        if j in dict_genres.keys():
-            aux = dict_genres[j]
-            aux.add(i["id"])
-            dict_genres[j] = aux
-        else:
-            aux = set()
-            aux.add(i["id"])
-            dict_genres[j] = aux"""
 
 """
 CLASES AUXILIARES
@@ -87,24 +71,6 @@ class User:
             database.db_updateOrder(cart['order'][0], 'Paid')
             return True
 
-        price_to_pay = cart.get_total_price() - points_to_use
-        if price_to_pay < 0:
-            # Se ha intentado usar demasiados puntos
-            return False
-        if price_to_pay > self.money:
-            return False
-        # Si el pago se puede realizar:
-        self.points -= points_to_use
-        self.money -= price_to_pay
-        self.points += int(price_to_pay * 0.05)
-        # Reescribimos el historial
-        #history = self.get_history_from_server()
-        #history['Compras'].append({'fecha':str(datetime.today()),'peliculas_compradas':cart.get_movies_in_cart(), 'precio_compra':cart.get_total_price()})
-        # Reescribimos el usuario
-        self.update_on_server()
-        #self.set_history_to_server(history)
-        return True
-
     def validate_signup_form(self, form):
         """
         Valida un formulario con los datos de usuario actualizando el objeto
@@ -120,15 +86,10 @@ class User:
         if not re.match(regex, data['signusername']):
             return False
         # ExistingUsername
-        #path = os.path.join(app.root_path, "usuarios/"+data['signusername'])
-        #if os.path.isdir(path):
-            #raise ExistingUserException(data['signusername'])
-            #return False
         if data['signusername'] in database.db_getCustomersUsernames():
             raise ExistingUserException(data['signusername'])
-            return False
         # Comprobar email:
-        #InvalidForm
+        # InvalidForm
         if 'email' not in data.keys():
             return False
         # ValidEmail
@@ -137,7 +98,7 @@ class User:
             return False
 
         # Comprobar direccion:
-        #InvalidForm
+        # InvalidForm
         if 'address' not in data.keys():
             return False
         # ValidAddress
@@ -146,7 +107,7 @@ class User:
             return False
 
         # Comprobar tarjeta:
-        #InvalidForm
+        # InvalidForm
         if 'payment' not in data.keys():
             return False
         # ValidAddress
@@ -180,12 +141,6 @@ class User:
         usando self.username.
         Solamente es necesario por ahora recargar dinero y puntos
         """
-        #path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
-        #if not os.path.exists(path):
-        #    return False
-
-        #with open(path, encoding="utf-8") as file:
-            #data = json.loads(file.read())
         data = database.db_getCustomerById(self.id)
         self.money = data['money']
         self.points = data['points']
@@ -199,20 +154,11 @@ class User:
         # Comprobar validez del usuario
         if not self.is_authenticated:
             return False
-        # Actualizar data.dat
-        #path = os.path.join(app.root_path, "usuarios/"+self.username+"/data.dat")
-        #if not os.path.exists(path):
-            #return False
-        # Obtiene previo y guarda
-        #with open(path, encoding="utf-8") as file:
-            #data = json.loads(file.read())
+
         data = database.db_getCustomerById(self.id)
         # Por ahora solo se puede modificar el dinero y los puntos
         data['points'] = self.points
         data['money'] = self.money
-
-        #with open(path, 'w', encoding='utf-8') as outfile:
-        #    json.dump(data, outfile, ensure_ascii=False, indent=4)
         database.db_updateCustomerById(self.id, data)
         return True
 
@@ -223,22 +169,6 @@ class User:
         """
         if not self.validate_signup_form(form):
             return False
-
-        # Obtenemos salt y hasheamos
-        #password = form['signpassword']
-        #salt = os.urandom(16)
-        #enco = bytes(password, 'utf-8')
-        #hash = hashlib.blake2b(enco, salt=salt).hexdigest()
-
-        # Creamos directorio
-        #path = os.path.join(app.root_path, "usuarios/"+self.username)
-        #try:
-        #    os.mkdir(path)
-        #except OSError:
-        #    print("Creation of the directory %s failed" % path)
-        #else:
-        #    print("Succesfully created the directory %s" % path)
-
         data = {
             'username': str(self.username),
             'password': str(form['signpassword']),
@@ -248,17 +178,7 @@ class User:
             'money': str(self.money),
             'points': str(self.points)
         }
-
-        #with open(path+'/data.dat', 'w', encoding='utf-8') as outfile:
-            #json.dump(data, outfile, ensure_ascii=False, indent=4)
-
-        #Creamos historial.json
-        #history = {"Compras":[]}
-        #with open(path+'/historial.json', 'w', encoding='utf-8') as outfile:
-        #    json.dump(history, outfile, ensure_ascii=False, indent=4)
-
         database.db_insertCustomer(data)
-
         return True
 
     def get_from_server(self, form):
@@ -277,28 +197,12 @@ class User:
         if not re.match(regex, username):
             return False
 
-        #ath = os.path.join(app.root_path, "usuarios/"+username+"/data.dat")
-        #if not os.path.exists(path):
-            #return False
-
-        #with open(path, encoding="utf-8") as file:
-            #data = json.loads(file.read())
-
         if form['username'] not in database.db_getCustomersUsernames():
             return False
 
         data = database.db_getCustomerByUsername(form['username'], form['password'])
         if data == False:
             return data
-
-        # Comprobamos la contraseña
-        #hash = data['password']
-        #salt = bytes.fromhex(data['salt'])
-        #enco = bytes(password, 'utf-8')
-        #comp = hashlib.blake2b(enco, salt=salt).hexdigest()
-
-        #if compare_digest(hash, comp) is False:
-        #    return False
 
         # Actualizar usuario con los datos:
         self.username = data['username']
@@ -385,11 +289,16 @@ class Cart:
     def get_movies_in_cart(self):
         result = []
         for product_id, quantity in self.items.items():
-            #movie = catalogue['peliculas'][int(movie_id)]
             movie=database.db_getCartDataFromProdId(product_id)
             item = movie['orderdetail'][0]
-            result.append({'pelicula':{'titulo':item[0], 'precio':item[1], 'descripcion':item[2], 'id':product_id}, 'cantidad':quantity, 'importe':quantity*item[1], 'stock':database.db_getStockLeft(product_id)})
-            #result.append({'pelicula':movie, 'cantidad':quantity, 'importe':quantity*movie['precio']})
+            result.append({'pelicula':{
+                'titulo':item[0],
+                'precio':item[1],
+                'descripcion':item[2],
+                'id':product_id},
+                'cantidad':quantity,
+                'importe':quantity*item[1],
+                'stock':database.db_getStockLeft(product_id)})
         return result
 
     def get_total_items(self):
@@ -522,8 +431,8 @@ def cart():
     user=get_session_user()
 
     if user.is_authenticated:
-        #Primero revisamos si antes de loggear habia un carrito con algun articulo cargado
-        #para cargar los articulos de este en el carrito de nuestro usuario al loguear
+        # Primero revisamos si antes de loggear habia un carrito con algun articulo cargado
+        # para cargar los articulos de este en el carrito de nuestro usuario al loguear
         cart = get_session_cart()
 
         if cart.get_total_items() != 0:
@@ -575,12 +484,12 @@ def cart_update(new_number,id):
 
         for item in cart['orderdetails']:
             if item[5] == int(id):
-                price = item[2]#cart.get_item_price(id)
-                total = cart['order'][5]#cart.get_total_price()
+                price = item[2]             # cart.get_item_price(id)
+                total = cart['order'][5]    # cart.get_total_price()
                 return f"{price}/{total}"
 
-        price = 0#cart.get_item_price(id)
-        total = cart['order'][5]#cart.get_total_price()
+        price = 0                           # cart.get_item_price(id)
+        total = cart['order'][5]            # cart.get_total_price()
         return f"{price}/{total}"
 
     else:
@@ -638,7 +547,7 @@ def history():
 def checkout():
     user = get_session_user()
     if user.is_authenticated:
-        #aux = get_movies_in_cart_total_price()
+        # aux = get_movies_in_cart_total_price()
         cart = database.db_getUserActualCart(user.id)
         num_products = 0
         for prod in cart['orderdetails']:
@@ -714,7 +623,7 @@ def profile_add_money():
     else:
         abort(401)
 
-#@app.route('/user/<string:user>/history')
+# @app.route('/user/<string:user>/history')
 
 # Ruta para numero visitas
 @app.route('/num_visitors', methods=['GET'])

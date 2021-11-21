@@ -14,9 +14,19 @@ db_meta = MetaData(bind=db_engine)
 # cargar una tabla
 db_table_movies = Table('imdb_movies', db_meta, autoload=True, autoload_with=db_engine)
 
-descripcion_resumen = "Star Wars: Episodio I - La amenaza fantasma (título original en inglés: Star Wars: Episode I - The Phantom Menace; también conocida en español como La guerra de las galaxias: Episodio I - La amenaza fantasma) es una película de space opera nota 1. de 1999, escrita y dirigida por el director de cine estadounidense George Lucas.",
+descripcion_resumen = "Cras suscipit in magna in varius. Cras egestas \
+    cursus eros, a lacinia mauris feugiat eu. Morbi sollicitudin \
+    fermentum mauris, luctus sollicitudin risus vehicula et. \
+    Ut in vestibulum mi, vitae dapibus mauris. Donec commodo lectus et nunc gravida variu"
 
-descripcion_extra="Es la cuarta entrega de la saga Star Wars y la primera en el orden cronológico de la misma, después de un paréntesis de veintidós años del lanzamiento de Una nueva esperanza.La trama describe la historia del maestro jedi Qui-Gon Jinn y de su aprendiz Obi-Wan Kenobi, que escoltan y protegen a la Reina Amidala desde su planeta Naboo hasta Coruscant con la esperanza de encontrar una salida pacífica a un conflicto comercial interplanetario a gran escala. También trata del joven Anakin Skywalker antes de convertirse en Jedi, presentado como un esclavo con un potencial de la Fuerza inusualmente fuerte, y debe lidiar con el misterioso regreso de los Sith.",
+descripcion_extra="Lorem ipsum dolor sit amet, consectetur \
+    adipiscing elit. Etiam convallis blandit turpis id pretium. \
+    Aliquam erat volutpat. Class aptent taciti sociosqu ad litora \
+    torquent per conubia nostra, per inceptos himenaeos. Sed tempus \
+    lacinia tristique. Cras suscipit in magna in varius. Cras egestas \
+    cursus eros, a lacinia mauris feugiat eu. Morbi sollicitudin \
+    fermentum mauris, luctus sollicitudin risus vehicula et. \
+    Ut in vestibulum mi, vitae dapibus mauris. Donec commodo lectus et nunc gravida variu"
 
 #Macro para determinar cuantas peliculas cargamos en la pagina inicializa
 LIMIT = 100
