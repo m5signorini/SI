@@ -44,6 +44,7 @@ setorder_db:
 	psql -f setOrderAmount.sql
 gettops_db:
 	psql -f getTopActor.sql
+	psql -f getTopSales.sql
 searchmovies_db:
 	psql -f searchMovies.sql
 inventorycustomertrigger_db:

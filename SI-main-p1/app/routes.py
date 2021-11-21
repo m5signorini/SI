@@ -549,7 +549,7 @@ def checkout():
         cart = database.db_getUserActualCart(user.id)
         num_products = 0
         for prod in cart['orderdetails']:
-            num_products += prod[2]
+            num_products += prod[1]
         total_price = cart['order'][5]
         if num_products < 1:
             return redirect('/cart')
