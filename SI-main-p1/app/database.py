@@ -1,25 +1,29 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys, traceback
-from sqlalchemy import create_engine, func
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, text
+import sys
+import traceback
+from sqlalchemy import create_engine
+from sqlalchemy import Table, MetaData, text
 from sqlalchemy.sql import select, func, column
 
-import random, string
-
 # configurar el motor de sqlalchemy
-db_engine = create_engine("postgresql://alumnodb:alumnodb@localhost/si1", echo=False)
+db_engine = create_engine(
+    "postgresql://alumnodb:alumnodb@localhost/si1",
+    echo=False)
 db_meta = MetaData(bind=db_engine)
 # cargar una tabla
-db_table_movies = Table('imdb_movies', db_meta, autoload=True, autoload_with=db_engine)
+db_table_movies = Table(
+    'imdb_movies',
+    db_meta,
+    autoload=True,
+    autoload_with=db_engine)
 
 descripcion_resumen = "Cras suscipit in magna in varius. Cras egestas \
     cursus eros, a lacinia mauris feugiat eu. Morbi sollicitudin \
     fermentum mauris, luctus sollicitudin risus vehicula et. \
     Ut in vestibulum mi, vitae dapibus mauris. Donec commodo lectus et nunc gravida variu"
 
-descripcion_extra="Lorem ipsum dolor sit amet, consectetur \
+descripcion_extra = "Lorem ipsum dolor sit amet, consectetur \
     adipiscing elit. Etiam convallis blandit turpis id pretium. \
     Aliquam erat volutpat. Class aptent taciti sociosqu ad litora \
     torquent per conubia nostra, per inceptos himenaeos. Sed tempus \
@@ -28,11 +32,12 @@ descripcion_extra="Lorem ipsum dolor sit amet, consectetur \
     fermentum mauris, luctus sollicitudin risus vehicula et. \
     Ut in vestibulum mi, vitae dapibus mauris. Donec commodo lectus et nunc gravida variu"
 
-#Macro para determinar cuantas peliculas cargamos en la pagina inicializa
+# Macro para determinar cuantas peliculas cargamos en la pagina inicializa
 LIMIT = 100
 
 # METODOS AUXILIARES
 ####################
+
 
 def generate_movieList(result):
     """
@@ -40,12 +45,13 @@ def generate_movieList(result):
     generates the necessary data for each id.
     """
     # Convertimos el proxy 'result' en una lista de dicts mas legible
-    as_list = [{column: value for column, value in rowproxy.items()} for rowproxy in result]
+    as_list = [{column: value for column, value in rowproxy.items()}
+               for rowproxy in result]
 
     # Si la lista es vacia o no de la forma correcta, devolvemos []
     if len(as_list) < 1:
         return []
-    if not 'movieid' in as_list[0].keys():
+    if 'movieid' not in as_list[0].keys():
         return []
 
     movieList = []
@@ -54,7 +60,8 @@ def generate_movieList(result):
         id = item.get('movieid', None)
         if not id:
             continue
-        movieDict['descripcion_resumen'] = item.get('descripcion_resumen', descripcion_resumen)
+        movieDict['descripcion_resumen'] = item.get(
+            'descripcion_resumen', descripcion_resumen)
         movieDict['titulo'] = item.get('titulo', item.get('movietitle', None))
         if not movieDict['titulo']:
             info = db_getMovieInfo(id)
@@ -71,6 +78,7 @@ def generate_movieList(result):
 # METODOS DE ACCESO A DATOS
 ###########################
 
+
 def db_listOfMovies1949():
     try:
         # conexion a la base de datos
@@ -80,20 +88,21 @@ def db_listOfMovies1949():
         # Seleccionar las peliculas del anno 1949
         db_movies_1949 = select([db_table_movies]).where(text("year = '1949'"))
         db_result = db_conn.execute(db_movies_1949)
-        #db_result = db_conn.execute("Select * from imdb_movies where year = '1949'")
+        # db_result = db_conn.execute("Select * from imdb_movies where year = '1949'")
 
         db_conn.close()
 
-        return  list(db_result)
-    except:
+        return list(db_result)
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_topActorsByGenre(genre):
     try:
@@ -106,17 +115,19 @@ def db_topActorsByGenre(genre):
                                     order by top.Num desc limit 10".format(genre))
 
         db_conn.close()
-        as_list = [{column: value for column, value in rowproxy.items()} for rowproxy in db_result]
+        as_list = [{column: value for column, value in rowproxy.items()}
+                   for rowproxy in db_result]
         return as_list
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getMovieInfo(movie):
     try:
@@ -125,14 +136,16 @@ def db_getMovieInfo(movie):
         db_conn = db_engine.connect()
 
         # Seleccionar las peliculas del anno 1949
-        #action_movies = select([func.getTopActors('Action')])
-        #db_result = db_conn.execute(action_movies)
-        db_result = db_conn.execute("Select imdb_movies.movieid, imdb_movies.movietitle, imdb_movies.year, imdb_genres.genre from imdb_movies \
+        # action_movies = select([func.getTopActors('Action')])
+        # db_result = db_conn.execute(action_movies)
+        db_result = db_conn.execute(
+            "Select imdb_movies.movieid, imdb_movies.movietitle, imdb_movies.year, imdb_genres.genre from imdb_movies \
             join imdb_genremovies on imdb_genremovies.movieid = imdb_movies.movieid \
             join imdb_genres on imdb_genres.genreid = imdb_genremovies.genreid \
             where imdb_movies.movieid = {};".format(movie))
-        
-        db_result_directors = db_conn.execute("Select imdb_directors.directorname from imdb_movies \
+
+        db_result_directors = db_conn.execute(
+            "Select imdb_directors.directorname from imdb_movies \
             join imdb_directormovies on imdb_directormovies.movieid=imdb_movies.movieid \
             join imdb_directors on imdb_directormovies.directorid = imdb_directors.directorid \
             where imdb_movies.movieid = {};".format(movie))
@@ -142,13 +155,13 @@ def db_getMovieInfo(movie):
         result_list = list(db_result)
         director_list = list(db_result_directors)
 
-        ##############################################################################
+        #######################################################################
         # ATENCION:
         # ERROR - HAY PELICULAS SIN DIRECTORES POR LO TANTO LOS DETALLES ACABAN VACIOS
         # SOLUCION: REFACTORIZAR EL CODIGO PARA HACER LAS CONSULTAS DE DETALLES,
         # GENEROS Y DIRECTORES POR SEPARADO
         # EJEMPLO: MOVIEID = 77860
-        ###############################################################################
+        #######################################################################
 
         aux = result_list[0]
 
@@ -172,18 +185,18 @@ def db_getMovieInfo(movie):
         for genre in result_list:
             movieDict["categoria"].add(genre[3])
 
-
         return movieDict
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         # Devolver None para poder gestionar el error
         return None
+
 
 def db_genres():
     try:
@@ -198,15 +211,16 @@ def db_genres():
         aux = list(db_result)
 
         return aux
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getMovieGenres(movieid):
     try:
@@ -228,15 +242,16 @@ def db_getMovieGenres(movieid):
             ret.add(item[0])
 
         return list(ret)
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getMovieDirectors(movieid):
     try:
@@ -258,15 +273,16 @@ def db_getMovieDirectors(movieid):
             ret.add(item[0])
 
         return list(ret)
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_populateCatalog():
     try:
@@ -274,7 +290,8 @@ def db_populateCatalog():
         db_conn = None
         db_conn = db_engine.connect()
 
-        db_result = db_conn.execute("select imdb_movies.movietitle, imdb_movies.movieid \
+        db_result = db_conn.execute(
+            "select imdb_movies.movietitle, imdb_movies.movieid \
             from imdb_movies LIMIT {}".format(LIMIT))
 
         db_conn.close()
@@ -293,15 +310,16 @@ def db_populateCatalog():
             moviesList.append(movieDict)
 
         return moviesList
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getCustomersUsernames():
     try:
@@ -320,15 +338,16 @@ def db_getCustomersUsernames():
             ret.append(item[0])
 
         return ret
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getLastCustomerId():
     try:
@@ -336,7 +355,8 @@ def db_getLastCustomerId():
         db_conn = None
         db_conn = db_engine.connect()
 
-        db_result = db_conn.execute("select customerid from customers order by customerid desc limit 1;")
+        db_result = db_conn.execute(
+            "select customerid from customers order by customerid desc limit 1;")
 
         db_conn.close()
         aux = list(db_result)
@@ -345,48 +365,50 @@ def db_getLastCustomerId():
             ret = item[0]
 
         return ret
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
 
+
 def db_insertCustomer(data):
     try:
-        aux = db_getLastCustomerId()+1
+        aux = db_getLastCustomerId() + 1
         query = "insert into customers (customerid,address1, email,creditcard,username, \
                 password, balance, loyalty) values \
-                (" + str(aux) + ",'" + data["address"] +"','" + \
-                data["email"] +"','" + data["payment"] +"','" +data["username"] +"','" +\
-                data["password"] + "'," + data["money"] +","+ data["points"]+ ");"
-        print(query)
+                (" + str(aux) + ",'" + data["address"] + "','" + \
+                data["email"] + "','" + data["payment"] + "','" + data["username"] + "','" +\
+                data["password"] + "'," + data["money"] + "," + data["points"] + ");"
 
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
 
-        db_result = db_conn.execute(query)
+        db_conn.execute(query)
 
         db_conn.close()
 
         return True
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return False
 
+
 def db_getCustomerById(customerid):
     try:
-        query = "select * from customers where customerid = {}".format(customerid)
+        query = "select * from customers where customerid = {}".format(
+            customerid)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -396,34 +418,33 @@ def db_getCustomerById(customerid):
         db_conn.close()
 
         aux = list(db_result)
-        ret= dict()
+        ret = dict()
 
         item = aux[0]
-        ret["id"]=item[0]
-        ret["address"]=item[1]
-        ret["email"]=item[2]
-        ret["payment"]=item[3]
-        ret["username"]=item[4]
-        ret["money"]=item[6]
-        ret["points"]=item[7]
-
-        print(ret)
+        ret["id"] = item[0]
+        ret["address"] = item[1]
+        ret["email"] = item[2]
+        ret["payment"] = item[3]
+        ret["username"] = item[4]
+        ret["money"] = item[6]
+        ret["points"] = item[7]
 
         return ret
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return None
+
 
 def db_updateCustomerById(id, data):
     try:
         query = "update customers \
-        set address1 = '" + str(data['address']) +"', \
+        set address1 = '" + str(data['address']) + "', \
         email = '" + str(data['email']) + "', \
         creditcard = '" + str(data['payment']) + "', \
         username = '" + str(data['username']) + "', \
@@ -433,24 +454,26 @@ def db_updateCustomerById(id, data):
         db_conn = None
         db_conn = db_engine.connect()
 
-        db_result = db_conn.execute(query)
+        db_conn.execute(query)
 
         db_conn.close()
 
         return True
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return False
 
+
 def db_getCustomerByUsername(username, password):
     try:
-        query = "select * from customers where username = '{}' and password = '{}';".format(username, password)
+        query = "select * from customers where username = '{}' and password = '{}';".format(
+            username, password)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -465,24 +488,25 @@ def db_getCustomerByUsername(username, password):
         item = aux[0]
 
         ret = dict()
-        ret["id"]=item[0]
-        ret["address"]=item[1]
-        ret["email"]=item[2]
-        ret["payment"]=item[3]
-        ret["username"]=item[4]
-        ret["money"]=item[6]
-        ret["points"]=item[7]
+        ret["id"] = item[0]
+        ret["address"] = item[1]
+        ret["email"] = item[2]
+        ret["payment"] = item[3]
+        ret["username"] = item[4]
+        ret["money"] = item[6]
+        ret["points"] = item[7]
 
         return ret
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return False
+
 
 def db_generateHistoryData(userid):
     try:
@@ -506,19 +530,22 @@ def db_generateHistoryData(userid):
             details = db_getMoviesByOrder(userid, item[0])
             compras = []
             for movie in details:
-                compras.append({'pelicula':movie[0], 'cantidad':movie[2], 'importe':movie[2]*movie[1]})
-            history["Compras"].append({"fecha":str(item[2]), "peliculas_compradas": compras, "precio_compra": item[1]})
+                compras.append(
+                    {'pelicula': movie[0], 'cantidad': movie[2], 'importe': movie[2] * movie[1]})
+            history["Compras"].append({"fecha": str(
+                item[2]), "peliculas_compradas": compras, "precio_compra": item[1]})
 
         return history
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getMoviesByOrder(userid, orderid):
     try:
@@ -539,15 +566,16 @@ def db_getMoviesByOrder(userid, orderid):
         aux = list(db_result)
 
         return aux
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getProductsByMovie(movieid):
     try:
@@ -564,23 +592,22 @@ def db_getProductsByMovie(movieid):
 
         aux = list(db_result)
 
-        print(aux)
-
         return aux
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
 
 
 def db_getUserActualCart(userid):
     try:
-        query = "select * from orders where customerid = {} and status is NULL;".format(userid)
+        query = "select * from orders where customerid = {} and status is NULL;".format(
+            userid)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -607,20 +634,22 @@ def db_getUserActualCart(userid):
 
         cart_entries = list(db_result)
 
-        cart = {'order':order,'orderdetails':cart_entries}
+        cart = {'order': order, 'orderdetails': cart_entries}
         return cart
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
 
 # Esta funcion la usaremos para ver si sigue habiendo productos de este tipo, en caso de que len(aux)
 # sea 0, sigue habiendo stock de dicho producto
+
+
 def db_getProductByIdAlert(product_id):
     try:
         query = "select * from products join inventory on inventory.prod_id = products.prod_id \
@@ -637,15 +666,16 @@ def db_getProductByIdAlert(product_id):
         aux = list(db_result)
 
         return aux
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_insertOrderdetail(orderid, product_id, userid):
     try:
@@ -668,7 +698,7 @@ def db_insertOrderdetail(orderid, product_id, userid):
             db_conn = None
             db_conn = db_engine.connect()
 
-            db_result = db_conn.execute(query)
+            db_conn.execute(query)
 
             db_conn.close()
 
@@ -676,15 +706,16 @@ def db_insertOrderdetail(orderid, product_id, userid):
             db_updateOrderdetail(orderid, product_id, actual_quantity + 1)
 
         return True
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return False
+
 
 def db_getCartDataFromProdId(product_id):
     try:
@@ -703,23 +734,25 @@ def db_getCartDataFromProdId(product_id):
 
         cart_entries = list(db_result)
 
-        cart = {'orderdetail':cart_entries}
+        cart = {'orderdetail': cart_entries}
 
         return cart
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getProductPrice(product_id):
     try:
 
-        query = "select price from products where prod_id = {};".format(product_id)
+        query = "select price from products where prod_id = {};".format(
+            product_id)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -732,15 +765,16 @@ def db_getProductPrice(product_id):
         price = price[0][0]
 
         return int(price)
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_updateOrderdetail(orderid, product_id, new_quantity):
     try:
@@ -754,7 +788,7 @@ def db_updateOrderdetail(orderid, product_id, new_quantity):
             db_conn = None
             db_conn = db_engine.connect()
 
-            db_result = db_conn.execute(query)
+            db_conn.execute(query)
 
             db_conn.close()
         else:
@@ -764,25 +798,27 @@ def db_updateOrderdetail(orderid, product_id, new_quantity):
             db_conn = None
             db_conn = db_engine.connect()
 
-            db_result = db_conn.execute(query)
+            db_conn.execute(query)
 
             db_conn.close()
 
         return True
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
+
 
 def db_getStockLeft(product_id):
     try:
 
-        query = "select stock from inventory where prod_id = {};".format(product_id)
+        query = "select stock from inventory where prod_id = {};".format(
+            product_id)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -795,16 +831,15 @@ def db_getStockLeft(product_id):
         ret = ret[0][0]
 
         return ret
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return 'Something is broken'
-
 
 
 def db_searchMovies(title, categories):
@@ -814,20 +849,20 @@ def db_searchMovies(title, categories):
         db_conn = db_engine.connect()
         db_result = db_conn.execute(
             select([column('movieid')])
-                .select_from(func.searchMovies(title, categories))
-                .limit(LIMIT*10)
-            )
+            .select_from(func.searchMovies(title, categories))
+            .limit(LIMIT * 10)
+        )
         db_conn.close()
         # db_result has a list of tuples with title and id
         movieList = generate_movieList(db_result)
         return movieList
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
 
         return None
 
@@ -839,14 +874,14 @@ def db_updateOrder(orderid, status):
                 where orderid={}".format(status, orderid)
         db_conn = None
         db_conn = db_engine.connect()
-        db_result = db_conn.execute(query)
+        db_conn.execute(query)
         db_conn.close()
         return True
-    except:
+    except BaseException:
         if db_conn is not None:
             db_conn.close()
         print("Exception in DB access:")
-        print("-"*60)
+        print("-" * 60)
         traceback.print_exc(file=sys.stderr)
-        print("-"*60)
+        print("-" * 60)
         return False
