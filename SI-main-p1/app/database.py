@@ -605,9 +605,9 @@ def db_getUserActualCart(userid):
 # sea 0, sigue habiendo stock de dicho producto
 def db_getProductByIdAlert(product_id):
     try:
-        query = "select * from products join alerts on alerts.inventoryid = inventory.inventoryid \
-        join inventory on inventory.prod_id = products.prod_id \
-        where prod_id = {};".format(product_id)
+        query = "select * from products join inventory on inventory.prod_id = products.prod_id \
+                join alerts on alerts.inventoryid = inventory.prod_id \
+                where products.prod_id = {};".format(product_id)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -658,6 +658,62 @@ def db_insertOrderdetail(orderid, product_id, userid):
             db_updateOrderdetail(orderid, product_id, actual_quantity + 1)
 
         return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_getCartDataFromProdId(product_id):
+    try:
+
+        query = "select imdb_movies.movietitle, products.price, products.description, products.prod_id  from products\
+                join inventory on inventory.prod_id = products.prod_id\
+                join imdb_movies on products.movieid = imdb_movies.movieid\
+                where products.prod_id={};".format(product_id)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        cart_entries = list(db_result)
+
+        cart = {'orderdetail':cart_entries[0]}
+
+        return cart
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_getProductPrice(product_id):
+    try:
+
+        query = "select price from products where prod_id = {};".format(product_id)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        price = list(db_result)
+        price = price[0][0]
+
+        return int(price)
     except:
         if db_conn is not None:
             db_conn.close()

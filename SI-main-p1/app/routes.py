@@ -359,15 +359,18 @@ class Cart:
             self.items.pop(product_id, None)
             return
         if product_id not in self.items:
-            self.items[movie_id] = 0
-        self.items[movie_id] = number
+            self.items[product_id] = 0
+        self.items[product_id] = number
         return
 
     def get_movies_in_cart(self):
         result = []
-        for movie_id, quantity in self.items.items():
-            movie = catalogue['peliculas'][int(movie_id)]
-            result.append({'pelicula':movie, 'cantidad':quantity, 'importe':quantity*movie['precio']})
+        for product_id, quantity in self.items.items():
+            #movie = catalogue['peliculas'][int(movie_id)]
+            movie=database.db_getCartDataFromProdId(product_id)
+            item = movie['orderdetail']
+            result.append({'pelicula':{'titulo':item[0], 'precio':item[1], 'descripcion':item[2], 'id':product_id}, 'cantidad':quantity, 'importe':quantity*item[1]})
+            #result.append({'pelicula':movie, 'cantidad':quantity, 'importe':quantity*movie['precio']})
         return result
 
     def get_total_items(self):
@@ -378,17 +381,17 @@ class Cart:
 
     def get_total_price(self):
         accum = 0
-        for movie_id in self.items:
-            accum += self.get_item_price(movie_id)
+        for product_id in self.items:
+            accum += self.get_item_price(product_id)
         return accum
 
-    def get_item_price(self, movie_id):
+    def get_item_price(self, product_id):
         # El catalogo se haya indexado por id:
-        id = int(movie_id)
-        if id >= len(catalogue['peliculas']):
+        id = int(product_id)
+        if len(database.db_getProductByIdAlert(product_id)) != 0:
             return 0
-        quantity = self.items.get(movie_id, 0)
-        price = catalogue['peliculas'][id]['precio']
+        quantity = self.items.get(product_id, 0)
+        price = database.db_getProductPrice(product_id)
         return price*quantity
 
     def toJSON(self):
@@ -505,8 +508,15 @@ def cart():
         for item in cart['orderdetails']:
             movies_data.append({'pelicula':{'titulo':item[0], 'precio':item[3], 'descripcion':item[4], 'id':item[5]}, 'cantidad':item[1], 'importe':item[2]})
         total_price = cart['order'][5]
-    #cart = get_session_cart()
-    return render_template('cart.html', movies_in_cart=movies_data, user=user, total_price=total_price)
+        return render_template('cart.html', movies_in_cart=movies_data, user=user, total_price=total_price)
+
+    else:
+        cart = get_session_cart()
+        movies_data = cart.get_movies_in_cart()
+        total_price = cart.get_total_price()
+
+        return render_template('cart.html', movies_in_cart=movies_data, user=user, total_price=total_price)
+
 
 
 @app.route('/cart_update/<int:new_number>/<string:id>', methods=['GET', 'POST'])
@@ -528,26 +538,40 @@ def cart_update(new_number,id):
 
         price = 0#cart.get_item_price(id)
         total = (database.db_getUserActualCart(user.id))['order'][5]#cart.get_total_price()
-    #cart = get_session_cart()
-    #cart.update_movie_in_cart(id, new_number)
-    #session['cart'] = cart.toJSON()
-    #session.modified = True
-    return f"{price}/{total}"
+        return f"{price}/{total}"
+
+    else:
+        cart = get_session_cart()
+        cart.update_movie_in_cart(id, new_number)
+
+        price = cart.get_item_price(id)
+        total = cart.get_total_price()
+
+        session['cart'] = cart.toJSON()
+        session.modified = True
+
+        return f"{price}/{total}"
 
 
 @app.route('/movie_page/add_to_cart/<string:prod_id>', methods=['GET', 'POST'])
 def add_to_cart(prod_id):
     user = get_session_user()
+
     if user.is_authenticated:
         cart = database.db_getUserActualCart(user.id)
 
         database.db_insertOrderdetail(cart['order'][0], prod_id, user.id)
 
-    #cart = get_session_cart()
-    #cart.add_movie_to_cart(prod_id)
-    #session['cart'] = cart.toJSON()
-    #session.modified = True
-    return redirect('/cart')
+        return redirect('/cart')
+
+    else:
+        cart = get_session_cart()
+        cart.add_movie_to_cart(prod_id)
+
+        session['cart'] = cart.toJSON()
+        session.modified = True
+
+        return redirect('/cart')
 
 
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])
