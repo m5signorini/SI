@@ -147,6 +147,7 @@ CREATE TABLE imdb_genremovies (
 CREATE TABLE imdb_languagemovies (
     movieid INTEGER,
     languageid INTEGER,
+    extra_information VARCHAR,
     PRIMARY KEY (movieid, languageid),
     FOREIGN KEY (movieid)
         REFERENCES imdb_movies (movieid)
@@ -172,8 +173,8 @@ INSERT INTO imdb_genremovies (movieid, genreid)
 SELECT movieid, genreid
 FROM imdb_moviegenres as old_tab JOIN imdb_genres as new_tab ON old_tab.genre = new_tab.genre;
 
-INSERT INTO imdb_languagemovies (movieid, languageid)
-SELECT movieid, languageid
+INSERT INTO imdb_languagemovies (movieid, languageid, extra_information)
+SELECT movieid, languageid, old_tab.extrainformation
 FROM imdb_movielanguages as old_tab JOIN imdb_languages as new_tab ON old_tab.language = new_tab.language;
 
 INSERT INTO imdb_countrymovies (movieid, countryid)
