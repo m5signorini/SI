@@ -684,7 +684,7 @@ def db_insertOrderdetail(orderid, product_id, userid):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return False
 
 def db_getCartDataFromProdId(product_id):
     try:

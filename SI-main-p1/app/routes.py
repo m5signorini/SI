@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from sqlalchemy.sql.expression import false
 from app import app, database
 from flask import render_template, request, url_for, redirect, session, abort, jsonify
 import json
@@ -268,12 +269,12 @@ class Cart:
 
     def add_movie_to_cart(self, product_id):
         if len(database.db_getProductByIdAlert(product_id)) != 0:
-            return
+            return False
 
         if product_id not in self.items:
             self.items[product_id] = 0
         self.items[product_id] += 1
-        return
+        return True
 
     def update_movie_in_cart(self, product_id, number):
         if len(database.db_getProductByIdAlert(product_id)) != 0:
@@ -507,21 +508,22 @@ def cart_update(new_number,id):
 def add_to_cart(prod_id):
     user = get_session_user()
 
+    if not prod_id.isdigit():
+        return jsonify(False)
+
     if user.is_authenticated:
         cart = database.db_getUserActualCart(user.id)
-
-        database.db_insertOrderdetail(cart['order'][0], prod_id, user.id)
-
-        return redirect('/cart')
+        result = database.db_insertOrderdetail(cart['order'][0], prod_id, user.id)
+        return jsonify(result)
 
     else:
         cart = get_session_cart()
-        cart.add_movie_to_cart(prod_id)
+        result = cart.add_movie_to_cart(prod_id)
 
         session['cart'] = cart.toJSON()
         session.modified = True
 
-        return redirect('/cart')
+        return jsonify(result)
 
 
 @app.route('/movie_page/<int:id>',methods=['GET', 'POST'])
