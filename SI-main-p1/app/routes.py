@@ -166,7 +166,6 @@ class User:
 
         #with open(path, encoding="utf-8") as file:
             #data = json.loads(file.read())
-        print(str(self.id) + "################################################################")
         data = database.db_getCustomerById(self.id)
         self.money = data['money']
         self.points = data['points']
@@ -368,7 +367,7 @@ class Cart:
         for product_id, quantity in self.items.items():
             #movie = catalogue['peliculas'][int(movie_id)]
             movie=database.db_getCartDataFromProdId(product_id)
-            item = movie['orderdetail']
+            item = movie['orderdetail'][0]
             result.append({'pelicula':{'titulo':item[0], 'precio':item[1], 'descripcion':item[2], 'id':product_id}, 'cantidad':quantity, 'importe':quantity*item[1]})
             #result.append({'pelicula':movie, 'cantidad':quantity, 'importe':quantity*movie['precio']})
         return result
@@ -503,6 +502,31 @@ def cart():
     user=get_session_user()
 
     if user.is_authenticated:
+        #Primero revisamos si antes de loggear habia un carrito con algun articulo cargado
+        #para cargar los articulos de este en el carrito de nuestro usuario al loguear
+        cart = get_session_cart()
+
+        if cart.get_total_items() != 0:
+            database_cart = database.db_getUserActualCart(user.id)
+            for item in cart.get_movies_in_cart():
+                flag = 0
+                for ele in database_cart['orderdetails']:
+                    if item['pelicula']['id'] == ele[5] and flag==0:
+                        dif = abs(item['cantidad']-ele[1])
+                        if dif != 0:
+                            database.db_updateOrderdetail(database_cart['order'][0], item['pelicula']['id'], item['cantidad'])
+                        cart.update_movie_in_cart(item['pelicula']['id'], 0)
+                        flag = 1
+                if flag == 0:
+                    database.db_insertOrderdetail(database_cart['order'][0], item['pelicula']['id'], user.id)
+                    if item['cantidad'] > 1:
+                        database.db_updateOrderdetail(database_cart['order'][0], item['pelicula']['id'], item['cantidad'])
+                    cart.update_movie_in_cart(item['pelicula']['id'], 0)
+
+
+        session['cart'] = cart.toJSON()
+
+
         cart = database.db_getUserActualCart(user.id)
         movies_data = []    # Includes prices and quantity
         for item in cart['orderdetails']:
@@ -525,7 +549,6 @@ def cart_update(new_number,id):
     user = get_session_user()
     if user.is_authenticated:
         cart = database.db_getUserActualCart(user.id)
-        print(cart['order'][0],id,new_number)
         database.db_updateOrderdetail(cart['order'][0],id,new_number)
 
         cart = database.db_getUserActualCart(user.id)
@@ -537,7 +560,7 @@ def cart_update(new_number,id):
                 return f"{price}/{total}"
 
         price = 0#cart.get_item_price(id)
-        total = (database.db_getUserActualCart(user.id))['order'][5]#cart.get_total_price()
+        total = cart['order'][5]#cart.get_total_price()
         return f"{price}/{total}"
 
     else:
@@ -703,7 +726,6 @@ def search_movies():
             if len(categories) < 1:
                 categories = get_all_categories()
             results = database.db_searchMovies(query, categories)
-            print(results)
             return render_template('index.html', movies=results, categories=get_all_categories(), user=get_session_user())
         except:
             return

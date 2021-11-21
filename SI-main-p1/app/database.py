@@ -685,7 +685,7 @@ def db_getCartDataFromProdId(product_id):
 
         cart_entries = list(db_result)
 
-        cart = {'orderdetail':cart_entries[0]}
+        cart = {'orderdetail':cart_entries}
 
         return cart
     except:
