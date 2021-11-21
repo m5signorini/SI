@@ -368,7 +368,7 @@ class Cart:
             #movie = catalogue['peliculas'][int(movie_id)]
             movie=database.db_getCartDataFromProdId(product_id)
             item = movie['orderdetail'][0]
-            result.append({'pelicula':{'titulo':item[0], 'precio':item[1], 'descripcion':item[2], 'id':product_id}, 'cantidad':quantity, 'importe':quantity*item[1]})
+            result.append({'pelicula':{'titulo':item[0], 'precio':item[1], 'descripcion':item[2], 'id':product_id}, 'cantidad':quantity, 'importe':quantity*item[1], 'stock':database.db_getStockLeft(product_id)})
             #result.append({'pelicula':movie, 'cantidad':quantity, 'importe':quantity*movie['precio']})
         return result
 
@@ -530,7 +530,7 @@ def cart():
         cart = database.db_getUserActualCart(user.id)
         movies_data = []    # Includes prices and quantity
         for item in cart['orderdetails']:
-            movies_data.append({'pelicula':{'titulo':item[0], 'precio':item[3], 'descripcion':item[4], 'id':item[5]}, 'cantidad':item[1], 'importe':item[2]})
+            movies_data.append({'pelicula':{'titulo':item[0], 'precio':item[3], 'descripcion':item[4], 'id':item[5]}, 'cantidad':item[1], 'importe':item[2], 'stock':database.db_getStockLeft(item[5])})
         total_price = cart['order'][5]
         return render_template('cart.html', movies_in_cart=movies_data, user=user, total_price=total_price)
 

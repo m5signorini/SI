@@ -30,7 +30,7 @@
             <div class="product_price">{{ item['pelicula'].precio }} $</div>
             <div class="product_id">{{ item['pelicula'].id }}</div>
             <div class="product_quantity">
-                <input class="copies_in_cart" name="copies_in_cart" type="number" value={{item.cantidad}} min="1">
+                <input class="copies_in_cart" name="copies_in_cart" type="number" value={{item.cantidad}} min="1" max="{{ item['stock'] }}">
             </div>
             <button class="product_remove" type="button">Eliminar</button>
             <div class="products_total_price">{{ item['importe'] }} $</div>

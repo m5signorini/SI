@@ -761,6 +761,32 @@ def db_updateOrderdetail(orderid, product_id, new_quantity):
 
         return 'Something is broken'
 
+def db_getStockLeft(product_id):
+    try:
+
+        query = "select stock from inventory where prod_id = {};".format(product_id)
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        db_result = db_conn.execute(query)
+
+        db_conn.close()
+
+        ret = list(db_result)
+        ret = ret[0][0]
+
+        return ret
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
 
 
 def db_searchMovies(title, categories):
