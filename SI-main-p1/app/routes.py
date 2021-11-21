@@ -726,10 +726,11 @@ def search_movies():
             if len(categories) < 1:
                 categories = get_all_categories()
             results = database.db_searchMovies(query, categories)
-            return render_template('index.html', movies=results, categories=get_all_categories(), user=get_session_user())
+            return render_template('search.html', movies=results, categories=get_all_categories(), user=get_session_user())
         except:
-            return
-    return "Que haces aqui?"
+            abort(401)
+    else:
+        abort(401)
 
 # Ruta para obtener listado de top actores
 @app.route('/get_topactors', methods=['GET'])

@@ -117,17 +117,20 @@ def db_getMovieInfo(movie):
         # Seleccionar las peliculas del anno 1949
         #action_movies = select([func.getTopActors('Action')])
         #db_result = db_conn.execute(action_movies)
-        db_result = db_conn.execute("Select imdb_movies.movieid, imdb_movies.movietitle, imdb_movies.year, imdb_directors.directorname, imdb_genres.genre from imdb_movies \
-            join imdb_directormovies on imdb_directormovies.movieid=imdb_movies.movieid \
-            join imdb_directors on imdb_directormovies.directorid = imdb_directors.directorid \
+        db_result = db_conn.execute("Select imdb_movies.movieid, imdb_movies.movietitle, imdb_movies.year, imdb_genres.genre from imdb_movies \
             join imdb_genremovies on imdb_genremovies.movieid = imdb_movies.movieid \
             join imdb_genres on imdb_genres.genreid = imdb_genremovies.genreid \
             where imdb_movies.movieid = {};".format(movie))
-
+        
+        db_result_directors = db_conn.execute("Select imdb_directors.directorname from imdb_movies \
+            join imdb_directormovies on imdb_directormovies.movieid=imdb_movies.movieid \
+            join imdb_directors on imdb_directormovies.directorid = imdb_directors.directorid \
+            where imdb_movies.movieid = {};".format(movie))
 
         db_conn.close()
 
         result_list = list(db_result)
+        director_list = list(db_result_directors)
 
         ##############################################################################
         # ATENCION:
@@ -146,15 +149,18 @@ def db_getMovieInfo(movie):
         movieDict["year"] = aux[2]
         movieDict["description_resumen"] = descripcion_resumen
         movieDict["description_extra"] = descripcion_extra
-        movieDict["director"] = set()
 
-        for director in result_list:
-            movieDict["director"].add(director[3])
+        if len(director_list) > 0:
+            movieDict["director"] = set()
+            for director in director_list:
+                movieDict["director"].add(director[0])
+        else:
+            movieDict["director"] = []
 
         movieDict["categoria"] = set()
 
         for genre in result_list:
-            movieDict["categoria"].add(genre[4])
+            movieDict["categoria"].add(genre[3])
 
 
         return movieDict
