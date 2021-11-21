@@ -2,6 +2,16 @@ CREATE OR REPLACE FUNCTION tr_update_inventory_customer() RETURNS trigger AS $$
         BEGIN
 
 		IF (new.status = 'Paid') THEN
+			IF EXISTS (
+				SELECT * from orderdetail
+				join products on products.prod_id = orderdetail.prod_id 
+					and orderdetail.orderid = old.orderid
+				join inventory on products.prod_id = inventory.prod_id
+				where stock < orderdetail.quantity
+			) THEN
+				RAISE EXCEPTION 'Not enough stock';
+			END IF;
+
 			UPDATE inventory as inv
 			set stock = stock - orderdetail.quantity, sales = sales + orderdetail.quantity
 			from (orders join orderdetail on orders.orderid = orderdetail.orderid)
@@ -17,15 +27,15 @@ CREATE OR REPLACE FUNCTION tr_update_inventory_customer() RETURNS trigger AS $$
 			from orders
 			where orders.orderid = old.orderid and customers.customerid = old.customerid;
 
-      insert into orders(orderid,orderdate, customerid, netamount, tax, totalamount)
-      select orderid+1, NOW(),new.customerid,0,15,0
-      from orders
-      order by orderid desc
-      limit 1;
+			insert into orders(orderid,orderdate, customerid, netamount, tax, totalamount)
+			select orderid+1, NOW(),new.customerid,0,15,0
+			from orders
+			order by orderid desc
+			limit 1;
 
 		END IF;
 
-			return NEW;
+		return NEW;
         END;
 $$ LANGUAGE plpgsql;
 

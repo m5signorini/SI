@@ -62,11 +62,31 @@ class User:
             return False
         if not form:
             return False
-        if len(cart.items.keys()) < 1:
-            return False
-        points_to_use = int(form.get('points', 0))
-        if points_to_use > self.points:
-            return False
+
+        # if len(cart.items.keys()) < 1:
+        #    return False
+        
+        total_price = cart['order'][5]
+
+        use_money = True
+        paymethod = form.get('points', '')
+        if paymethod == 'use_points':
+            use_money = False
+        if not use_money:
+            if self.points < total_price*100:
+                return False
+            self.points -= int(total_price*100)
+            self.update_on_server()
+            database.db_updateOrder(cart['order'][0], 'Paid')
+            return True
+        else:
+            if self.money < total_price*100:
+                return False
+            self.money -= int(total_price*100)
+            self.update_on_server()
+            database.db_updateOrder(cart['order'][0], 'Paid')
+            return True
+
         price_to_pay = cart.get_total_price() - points_to_use
         if price_to_pay < 0:
             # Se ha intentado usar demasiados puntos
@@ -617,11 +637,13 @@ def history():
 @app.route('/checkout',methods=['GET'])
 def checkout():
     user = get_session_user()
-    cart = get_session_cart()
     if user.is_authenticated:
         #aux = get_movies_in_cart_total_price()
-        num_products = cart.get_total_items()
-        total_price = cart.get_total_price()
+        cart = database.db_getUserActualCart(user.id)
+        num_products = 0
+        for prod in cart['orderdetails']:
+            num_products += prod[2]
+        total_price = cart['order'][5]
         return render_template('checkout.html', user=get_session_user(), num_products=num_products, total_price=total_price)
     else:
         # TODO: Añadir mensaje de aviso de inicio de sesion necesario
@@ -634,11 +656,11 @@ def checkout_pay():
     if not request.form:
         return redirect(url_for('index'))
     user = get_session_user()
-    cart = get_session_cart()
     if not user.is_authenticated:
         # TODO: Acceso restringido
         return abort(401)
     # Actualizamos usuario desde el servidor por si se ha realizado algun cambio
+    cart = database.db_getUserActualCart(user.id)
     user.update_from_server()
     session['usuario'] = user.toJSON()
     session.modified = True
@@ -648,7 +670,8 @@ def checkout_pay():
         return redirect(url_for('checkout'))
     else:
         # Si lo era se habra realizado la transaccion
-        session.pop('cart')
+        # session.pop('cart')
+        user.update_from_server()
         session['usuario'] = user.toJSON()
         session.modified = True
         return redirect(url_for('index'))

@@ -412,12 +412,12 @@ def db_getCustomerById(customerid):
 def db_updateCustomerById(id, data):
     try:
         query = "update customers \
-        set 'address1' = '" + str(data['address']) +"', \
-        'email' = '" + str(data['email']) + "', \
-        'creditcard' = '" + str(data['payment']) + "', \
-        'username' = '" + str(data['username']) + "', \
-        'balance' = " + str(data['money']) + " \
-        'loyalty' = " + str(data['points']) + " where customerid = {}".format(id)
+        set address1 = '" + str(data['address']) +"', \
+        email = '" + str(data['email']) + "', \
+        creditcard = '" + str(data['payment']) + "', \
+        username = '" + str(data['username']) + "', \
+        balance = " + str(data['money']) + ", \
+        loyalty = " + str(data['points']) + " where customerid = {}".format(id)
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
@@ -817,4 +817,24 @@ def db_searchMovies(title, categories):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return None
+
+
+def db_updateOrder(orderid, status):
+    try:
+        query = "update orders \
+                set status='{}' \
+                where orderid={}".format(status, orderid)
+        db_conn = None
+        db_conn = db_engine.connect()
+        db_result = db_conn.execute(query)
+        db_conn.close()
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+        return False
