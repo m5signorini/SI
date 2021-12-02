@@ -4,3 +4,4 @@ usuarios/*/
 thesessions/
 .DS_Store
 .exe
+.vscode

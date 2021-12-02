@@ -24,7 +24,7 @@ def dbConnect():
 
 def dbCloseConnect(db_conn):
     db_conn.close()
-  
+
 def delCity(city, bFallo, bSQL, duerme, bCommit):
     
     # Array de trazas a mostrar en la página
