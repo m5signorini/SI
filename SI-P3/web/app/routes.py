@@ -8,13 +8,13 @@ import os
 import sys
 import time
 
-@app.route('/', methods=['POST','GET'])
-@app.route('/index', methods=['POST','GET'])
+@app.route('/', methods=['POST', 'GET'])
+@app.route('/index', methods=['POST', 'GET'])
 def index():
     return render_template('index.html')
 
 
-@app.route('/borraCiudad', methods=['POST','GET'])
+@app.route('/borraCiudad', methods=['POST', 'GET'])
 def borraCiudad():
     if 'city' in request.form:
         city    = request.form["city"]
@@ -22,13 +22,13 @@ def borraCiudad():
         bCommit = "bCommit" in request.form
         bFallo  = "bFallo"  in request.form
         duerme  = request.form["duerme"]
-        dbr = database.delCity(city, bFallo, bSQL=='1', int(duerme), bCommit)
+        dbr = database.delCity(city, bFallo, bSQL == '1', int(duerme), bCommit)
         return render_template('borraCiudad.html', dbr=dbr)
     else:
         return render_template('borraCiudad.html')
 
-    
-@app.route('/topUK', methods=['POST','GET'])
+
+@app.route('/topUK', methods=['POST', 'GET'])
 def topUK():
     # TODO: consultas a MongoDB ...
     movies = [[], [], []]
