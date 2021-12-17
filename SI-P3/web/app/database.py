@@ -93,6 +93,7 @@ def delCity(city, bFallo, bSQL, duerme, bCommit):
         # TODO: confirmar cambios si todo va bien
         hacer_commit(db_conn, trans, city, bSQL, dbr)
         dbr.append('-- OK: Ejecucion correcta')
+    dbCloseConnect(db_conn)
     return dbr
 
 
