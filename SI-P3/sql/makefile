@@ -14,7 +14,7 @@ PSQL = psql
 # INICIALIZADORES
 ########################
 
-all: clear_db populate_db
+all: clear_db populate_db trigger
 raw_db: clear_db populate_db
 
 
