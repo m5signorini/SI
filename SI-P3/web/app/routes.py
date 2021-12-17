@@ -3,10 +3,11 @@
 
 from app import app
 from app import database
-from flask import render_template, request, url_for
-import os
-import sys
-import time
+from flask import render_template, request
+# import os
+# import sys
+# import time
+
 
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/index', methods=['POST', 'GET'])
@@ -17,11 +18,11 @@ def index():
 @app.route('/borraCiudad', methods=['POST', 'GET'])
 def borraCiudad():
     if 'city' in request.form:
-        city    = request.form["city"]
-        bSQL    = request.form["txnSQL"]
+        city = request.form["city"]
+        bSQL = request.form["txnSQL"]
         bCommit = "bCommit" in request.form
-        bFallo  = "bFallo"  in request.form
-        duerme  = request.form["duerme"]
+        bFallo = "bFallo" in request.form
+        duerme = request.form["duerme"]
         dbr = database.delCity(city, bFallo, bSQL == '1', int(duerme), bCommit)
         return render_template('borraCiudad.html', dbr=dbr)
     else:

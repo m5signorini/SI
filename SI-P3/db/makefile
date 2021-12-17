@@ -34,3 +34,6 @@ show_dbs:
 
 # MODIFICACIONES DE DB
 #########################
+
+trigger:
+	psql -f updPromo.sql
